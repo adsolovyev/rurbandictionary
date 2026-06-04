@@ -1,83 +1,118 @@
 // src/services/api.ts
 
+const API_BASE = '/api'; // прокси на бэк (настроен в vite.config.ts)
+
 export interface Definition {
   id: number;
   word: string;
   definition: string;
   example: string;
-  author: string;
-  createdAt: string;
+  author: string;      // login автора
+  created_at: string;
   upvotes: number;
   downvotes: number;
 }
 
-const mockDefinitions: Definition[] = [
-  { id: 1, word: "кринж", definition: "Чувство стыда или неловкости за чужие действия.", example: "Его выступление было полным кринжем.", author: "user123", createdAt: "2024-03-15", upvotes: 15, downvotes: 3 },
-  { id: 2, word: "хайп", definition: "Ажиотаж, искусственно созданный интерес вокруг чего-либо.", example: "Этот блогер создаёт хайп вокруг каждого видео.", author: "trendsetter", createdAt: "2024-03-10", upvotes: 22, downvotes: 2 },
-  { id: 3, word: "чекать", definition: "Проверять, смотреть, изучать.", example: "Чекни мои новые фотки в инсте.", author: "slangmaster", createdAt: "2024-03-05", upvotes: 9, downvotes: 1 }
-];
+// Получить случайные определения (главная страница)
+export const getRandomDefinitions = async (limit = 10): Promise<Definition[]> => {
+  const res = await fetch(`${API_BASE}/definitions/random?limit=${limit}`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch random definitions');
+  return res.json();
+};
 
-const mockUniqueWords = [
-  "кринж", "хайп", "чекать", "кек", "лол", "рофл", "шмот", "агриться", "бамп", "вайб",
-  "гайз", "даун", "ебать", "ёк", "жмых", "зиг", "изи", "йоу", "кап", "лампово"
-];
+// Получить определения по слову (поиск)
+export const getDefinitionsByWord = async (word: string, page = 1, limit = 10): Promise<Definition[]> => {
+  const res = await fetch(`${API_BASE}/definitions?word=${encodeURIComponent(word)}&page=${page}&limit=${limit}`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch definitions by word');
+  return res.json();
+};
 
-const nonCyrillicWords = [
-  "lol", "kek", "cheburek", "google", "windows", "xbox", "4k", "2fast"
-];
+// Добавить новое определение (требует авторизации)
+export const addDefinition = async (data: { word: string; definition: string; example: string; tags?: string[] }) => {
+  const res = await fetch(`${API_BASE}/definitions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || 'Failed to add definition');
+  }
+  return res.json();
+};
+
+// Голосовать за/против (требует авторизации)
+export const vote = async (definitionId: number, voteType: 'up' | 'down') => {
+  const res = await fetch(`${API_BASE}/definitions/${definitionId}/vote`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ vote: voteType }),
+    credentials: 'include',
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || 'Failed to vote');
+  }
+  return res.json();
+};
+
+// Пожаловаться на определение (требует авторизации)
+export const reportDefinition = async (definitionId: number, reason: string, comment: string) => {
+  const res = await fetch(`${API_BASE}/definitions/${definitionId}/report`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reason, comment }),
+    credentials: 'include',
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || 'Failed to report');
+  }
+  return res.json();
+};
+
+// Получить уникальные слова по букве (алфавитный указатель)
+export const getWordsByLetter = async (letter: string): Promise<string[]> => {
+  const res = await fetch(`${API_BASE}/browse?letter=${encodeURIComponent(letter)}`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch words by letter');
+  return res.json();
+};
+
+// Получить подсказки для поиска
+export const getSuggestions = async (query: string): Promise<string[]> => {
+  if (!query) return [];
+  const res = await fetch(`${API_BASE}/suggest?q=${encodeURIComponent(query)}`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch suggestions');
+  return res.json();
+};
+
+// Получить случайное слово
+export const getRandomWord = async (): Promise<string> => {
+  const res = await fetch(`${API_BASE}/random-word`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch random word');
+  const data = await res.json();
+  return data.word;
+};
 
 export const getNonCyrillicWords = async (): Promise<string[]> => {
-  await new Promise(resolve => setTimeout(resolve, 200));
-  return nonCyrillicWords;
+  return getWordsByLetter('#');
 };
 
-export const getRandomDefinitions = async (limit = 10): Promise<Definition[]> => {
-  await new Promise(resolve => setTimeout(resolve, 300));
-  const result: Definition[] = [];
-  for (let i = 0; i < limit; i++) {
-    result.push({ ...mockDefinitions[i % mockDefinitions.length], id: i + 1 });
-  }
-  return result;
-};
-
-export const vote = async (definitionId: number, voteType: 'up' | 'down') => {
-  await new Promise(resolve => setTimeout(resolve, 200));
-  console.log(`Голос ${voteType} за определение ${definitionId}`);
-  return { success: true };
-};
-
-export const addDefinition = async (data: { word: string; definition: string; example: string; tags?: string[] }) => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  console.log('Новое определение:', data);
-  return { success: true, id: Math.floor(Math.random() * 1000) };
-};
-
-export const reportDefinition = async (definitionId: number, reason: string, comment: string) => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  console.log(`Жалоба на определение ${definitionId}: причина=${reason}, комментарий=${comment}`);
-  return { success: true };
-};
-
-export const getWordsByLetter = async (letter: string): Promise<string[]> => {
-  await new Promise(resolve => setTimeout(resolve, 200));
-  const lowerLetter = letter.toLowerCase();
-  return mockUniqueWords.filter(word => word.startsWith(lowerLetter));
-};
-
-export const getSuggestions = async (query: string): Promise<string[]> => {
-  await new Promise(resolve => setTimeout(resolve, 100));
-  if (!query) return [];
-  const lowerQuery = query.toLowerCase();
-  return mockUniqueWords.filter(word => word.startsWith(lowerQuery)).slice(0, 5);
-};
-
-export const getDefinitionsByWord = async (word: string): Promise<Definition[]> => {
-  await new Promise(resolve => setTimeout(resolve, 300));
-  return mockDefinitions.filter(def => def.word.toLowerCase() === word.toLowerCase());
-};
-
-export const getRandomWord = async (): Promise<string> => {
-  await new Promise(resolve => setTimeout(resolve, 200));
-  const randomIndex = Math.floor(Math.random() * mockUniqueWords.length);
-  return mockUniqueWords[randomIndex];
+export const getDefinitionsByAuthor = async (author: string, page = 1, limit = 10) => {
+  const res = await fetch(`${API_BASE}/definitions/by-author?author=${encodeURIComponent(author)}&page=${page}&limit=${limit}`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch definitions by author');
+  return res.json();
 };

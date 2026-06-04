@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../stores/authStore';
 import { vote } from '../services/api';
 import CopyLinkModal from './CopyLinkModal';
 
@@ -9,9 +10,10 @@ interface CardProps {
   definition: string;
   example: string;
   author: string;
-  createdAt: string;
+  created_at: string;
   upvotes: number;
   downvotes: number;
+  user_vote?: number | null;
 }
 
 export default function Card({
@@ -20,43 +22,75 @@ export default function Card({
   definition,
   example,
   author,
-  createdAt,
+  created_at,
   upvotes: initialUpvotes,
   downvotes: initialDownvotes,
+  user_vote,
 }: CardProps) {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const [upvotes, setUpvotes] = useState(initialUpvotes);
   const [downvotes, setDownvotes] = useState(initialDownvotes);
-  const [userVote, setUserVote] = useState<'up' | 'down' | null>(null);
+  const [userVote, setUserVote] = useState<'up' | 'down' | null>(() => {
+    if (user_vote === 1) return 'up';
+    if (user_vote === -1) return 'down';
+    return null;
+  });
   const [showModal, setShowModal] = useState(false);
 
   const handleVote = async (type: 'up' | 'down') => {
-    if (userVote === type) return;
-    if (type === 'up') {
-      setUpvotes((prev) => prev + (userVote === 'down' ? 2 : 1));
-      if (userVote === 'down') setDownvotes((prev) => prev - 1);
-    } else {
-      setDownvotes((prev) => prev + (userVote === 'up' ? 2 : 1));
-      if (userVote === 'up') setUpvotes((prev) => prev - 1);
-    }
-    setUserVote(type);
-    await vote(id, type);
-  };
-
-  const handleCopyLink = () => setShowModal(true);
-  const handleReport = () => navigate(`/report/${id}`);
-
-  const speakWord = (word: string) => {
-    if (!window.speechSynthesis) {
-      console.warn("Web Speech API не поддерживается");
+    if (!user) {
+      navigate('/login?redirect=' + encodeURIComponent(window.location.pathname));
       return;
     }
+    if (userVote === type) {
+      if (type === 'up') setUpvotes((prev) => prev - 1);
+      else setDownvotes((prev) => prev - 1);
+      setUserVote(null);
+      await vote(id, type);
+    } else {
+      if (type === 'up') {
+        const increment = userVote === 'down' ? 2 : 1;
+        setUpvotes((prev) => prev + increment);
+        if (userVote === 'down') setDownvotes((prev) => prev - 1);
+      } else {
+        const increment = userVote === 'up' ? 2 : 1;
+        setDownvotes((prev) => prev + increment);
+        if (userVote === 'up') setUpvotes((prev) => prev - 1);
+      }
+      setUserVote(type);
+      await vote(id, type);
+    }
+  };
+
+  const handleReport = () => {
+    if (!user) {
+      navigate('/login?redirect=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
+    navigate(`/report/${id}`);
+  };
+
+  const handleCopyLink = () => {
+    setShowModal(true);
+  };
+
+  const speakWord = (word: string) => {
+    if (!window.speechSynthesis) return;
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = 'ru-RU';
     utterance.rate = 0.9;
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
   };
+
+  const formattedDate = created_at
+    ? new Date(created_at).toLocaleDateString('ru-RU', {
+        year: '2-digit',  // '26' вместо '2026'
+        month: '2-digit', // '06'
+        day: '2-digit',   // '04'
+      })
+    : '';
 
   return (
     <>
@@ -70,7 +104,7 @@ export default function Card({
           color: '#ffffff',
         }}
       >
-        {/* Верхняя строка: слово + динамик (слева) и иконки (справа) */}
+        {/* Верхняя строка: слово + динамик слева; иконки справа */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <h2 style={{ margin: 0, fontSize: '2.2rem', color: '#ffffff' }}>{word}</h2>
@@ -85,7 +119,6 @@ export default function Card({
             </button>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
-            {/* Кнопка ссылки */}
             <button
               onClick={handleCopyLink}
               style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'inline-flex' }}
@@ -95,7 +128,6 @@ export default function Card({
                 <path d="M240,88.23a54.43,54.43,0,0,1-16,37L189.25,160a54.27,54.27,0,0,1-38.63,16h-.05A54.63,54.63,0,0,1,96,119.84a8,8,0,0,1,16,.45A38.62,38.62,0,0,0,150.58,160h0a38.39,38.39,0,0,0,27.31-11.31l34.75-34.75a38.63,38.63,0,0,0-54.63-54.63l-11,11A8,8,0,0,1,135.7,59l11-11A54.65,54.65,0,0,1,224,48,54.86,54.86,0,0,1,240,88.23ZM109,185.66l-11,11A38.41,38.41,0,0,1,70.6,208h0a38.63,38.63,0,0,1-27.29-65.94L78,107.31A38.63,38.63,0,0,1,144,135.71a8,8,0,0,0,16,.45A54.86,54.86,0,0,0,144,96a54.65,54.65,0,0,0-77.27,0L32,130.75A54.62,54.62,0,0,0,70.56,224h0a54.28,54.28,0,0,0,38.64-16l11-11A8,8,0,0,0,109,185.66Z" />
               </svg>
             </button>
-            {/* Кнопка жалобы */}
             <button
               onClick={handleReport}
               style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'inline-flex' }}
@@ -108,10 +140,8 @@ export default function Card({
           </div>
         </div>
 
-        {/* Определение */}
-        <p style={{ margin: '0 0 12px 0', color: '#e0e0e0' }}>{definition}</p>
+        <p>{definition}</p>
 
-        {/* Пример (цитата) */}
         <blockquote
           style={{
             borderLeft: '4px solid #4dafff',
@@ -124,13 +154,28 @@ export default function Card({
           {example}
         </blockquote>
 
-        {/* Нижняя строка: автор/дата слева, голосование справа */}
+        {/* Нижняя строка: подпись слева, голосование справа */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
           <div style={{ fontSize: '0.85rem', color: '#a0a0a0' }}>
-            Добавлено {author}, {createdAt}
+            <span
+              onClick={() => navigate(`/search?word=${encodeURIComponent(word)}`)}
+              className="clickable-link"
+              style={{ cursor: 'pointer' }}
+            >
+              {word}
+            </span>
+            {' '}добавлено{' '}
+            <span
+              onClick={() => navigate(`/user/${encodeURIComponent(author)}`)}
+              className="clickable-link"
+              style={{ cursor: 'pointer' }}
+            >
+              {author}
+            </span>
+            , {formattedDate}
           </div>
 
-          {/* Кнопки голосования в виде пилюли */}
+          {/* Кнопки голосования */}
           <div
             style={{
               display: 'flex',
@@ -142,6 +187,7 @@ export default function Card({
           >
             <button
               onClick={() => handleVote('up')}
+              className="vote-up"
               style={{
                 background: userVote === 'up' ? '#4caf50' : 'transparent',
                 border: 'none',
@@ -162,6 +208,7 @@ export default function Card({
             <div style={{ width: '1px', backgroundColor: '#2a2f3a', alignSelf: 'stretch' }} />
             <button
               onClick={() => handleVote('down')}
+              className="vote-down"
               style={{
                 background: userVote === 'down' ? '#f44336' : 'transparent',
                 border: 'none',

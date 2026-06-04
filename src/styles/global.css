@@ -1,3 +1,10 @@
+body.dyslexic,
+body.dyslexic *,
+body.dyslexic *::before,
+body.dyslexic *::after {
+  font-family: 'OpenDyslexic', sans-serif !important;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -65,3 +72,40 @@ main {
 .random-button:hover .random-icon {
   transform: rotate(180deg);
 }
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body.dyslexic {
+  font-family: 'OpenDyslexic', sans-serif;
+}
+
+a, .clickable-link {
+  color: #4dafff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover, .clickable-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.alphabet-button {
+  transition: background-color 0.2s ease;
+}
+.alphabet-button:hover {
+  background-color: #1979e6 !important;
+}
+
+.vote-up:hover {
+  background-color: rgb(21, 128, 61) !important;
+}
+.vote-down:hover {
+  background-color: rgb(185, 28, 28) !important;
+}
+

@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../stores/authStore';
 import { addDefinition } from '../services/api';
 
 export default function AddDefinition() {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const [word, setWord] = useState('');
   const [definition, setDefinition] = useState('');
   const [example, setExample] = useState('');
@@ -11,8 +13,18 @@ export default function AddDefinition() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    if (!user) {
+      navigate('/login?redirect=/add');
+    }
+  }, [user, navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      navigate('/login?redirect=/add');
+      return;
+    }
     if (!word.trim() || !definition.trim()) {
       setError('Слово и определение обязательны');
       return;
@@ -26,18 +38,19 @@ export default function AddDefinition() {
         example: example.trim(),
         tags: tags.split(',').map(t => t.trim()).filter(Boolean)
       });
-      // После успешной отправки возвращаемся на главную
       navigate('/');
     } catch (err) {
-    console.error(err);
-    setError('Ошибка при добавлении. Попробуйте позже.');
-} finally {
+      setError('Ошибка при добавлении. Попробуйте позже.');
+      void err;
+    } finally {
       setLoading(false);
     }
   };
 
+  if (!user) return null; // редирект уже сработает, но пока ничего
+
   return (
-    <div>
+    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
       <h2>Добавить новое определение</h2>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '1rem' }}>
