@@ -7,10 +7,11 @@ export interface Definition {
   word: string;
   definition: string;
   example: string;
-  author: string;      // login автора
+  author: string;
   created_at: string;
   upvotes: number;
   downvotes: number;
+  user_vote?: number | null;   // добавить
 }
 
 // Получить случайные определения (главная страница)
