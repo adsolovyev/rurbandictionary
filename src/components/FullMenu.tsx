@@ -39,7 +39,9 @@ export default function FullMenu({ onClose }: FullMenuProps) {
               Админка
             </Link>
           )}
-
+          <Link to="/help" onClick={handleLinkClick} style={{ display: 'block', marginBottom: '1rem', fontSize: '1.2rem', textDecoration: 'none', color: '#ffffff' }}>
+            Помощь
+          </Link>
           <hr style={{ margin: '12px 0', borderColor: '#ffffff1a' }} />
           <button
             onClick={toggleDyslexicFont}
