@@ -117,3 +117,117 @@ export const getDefinitionsByAuthor = async (author: string, page = 1, limit = 1
   if (!res.ok) throw new Error('Failed to fetch definitions by author');
   return res.json();
 };
+
+// Админские эндпоинты для модерации определений
+export const getPendingDefinitions = async (): Promise<Definition[]> => {
+  const res = await fetch(`${API_BASE}/admin/definitions/pending`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch pending definitions');
+  return res.json();
+};
+
+export const approveDefinition = async (id: number): Promise<void> => {
+  const res = await fetch(`${API_BASE}/admin/definitions/${id}/approve`, {
+    method: 'PUT',
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to approve definition');
+};
+
+export const rejectDefinition = async (id: number, reason?: string): Promise<void> => {
+  const res = await fetch(`${API_BASE}/admin/definitions/${id}/reject`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reason }),
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to reject definition');
+};
+
+export const getReports = async () => {
+  const res = await fetch(`${API_BASE}/admin/reports`, { credentials: 'include' });
+  if (!res.ok) throw new Error('Failed to fetch reports');
+  return res.json();
+};
+
+export const getDefinitionsByExactWord = async (word: string, limit = 5): Promise<Definition[]> => {
+  const res = await fetch(`${API_BASE}/definitions/word/${encodeURIComponent(word)}/exact?limit=${limit}`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch definitions by exact word');
+  return res.json();
+};
+
+export const getAdminStats = async () => {
+  const res = await fetch(`${API_BASE}/admin/stats`, { credentials: 'include' });
+  if (!res.ok) throw new Error('Failed to fetch admin stats');
+  return res.json();
+};
+
+export const getRecentPendingDefinitions = async (limit = 10) => {
+  const res = await fetch(`${API_BASE}/admin/pending/recent?limit=${limit}`, { credentials: 'include' });
+  if (!res.ok) throw new Error('Failed to fetch recent pending definitions');
+  return res.json();
+};
+
+export const getRecentReports = async (limit = 10) => {
+  const res = await fetch(`${API_BASE}/admin/reports/recent?limit=${limit}`, { credentials: 'include' });
+  if (!res.ok) throw new Error('Failed to fetch recent reports');
+  return res.json();
+};
+
+// ========== Админские эндпоинты для жалоб ==========
+export interface ReportDetails {
+  id: number;
+  definition_id: number;
+  reporter_id: number;
+  reason: string;
+  comment: string;
+  created_at: string;
+  resolved: boolean;
+  word: string;
+  definition: string;
+  example: string;
+  def_created_at: string;
+  upvotes: number;
+  downvotes: number;
+  def_status: string;
+  author_id: number;
+  author_login: string;
+  is_banned: boolean;
+  author_definitions_count: number;
+  author_reports_count: number;
+}
+
+export const getAllActiveReports = async (): Promise<ReportDetails[]> => {
+  const res = await fetch(`${API_BASE}/admin/reports/all`, { credentials: 'include' });
+  if (!res.ok) throw new Error('Failed to fetch reports');
+  return res.json();
+};
+
+export const resolveReport = async (id: number, adminComment?: string): Promise<void> => {
+  const res = await fetch(`${API_BASE}/admin/reports/${id}/resolve`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ adminComment }),
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to resolve report');
+};
+
+export const blockDefinition = async (id: number): Promise<void> => {
+  const res = await fetch(`${API_BASE}/admin/definitions/${id}/block`, {
+    method: 'PUT',
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to block definition');
+};
+
+export const banUser = async (userId: number): Promise<void> => {
+  const res = await fetch(`${API_BASE}/admin/users/${userId}/ban`, {
+    method: 'PUT',
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to ban user');
+};

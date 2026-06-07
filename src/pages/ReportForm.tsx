@@ -2,17 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { reportDefinition } from '../services/api';
-
-interface DefinitionPreview {
-  id: number;
-  word: string;
-  definition: string;
-  example: string;
-  author: string;
-  created_at: string;
-  upvotes: number;
-  downvotes: number;
-}
+import CardSimple from '../components/CardSimple';
+import type { Definition } from '../services/api';
 
 export default function ReportForm() {
   const { definitionId } = useParams<{ definitionId: string }>();
@@ -22,7 +13,7 @@ export default function ReportForm() {
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [definition, setDefinition] = useState<DefinitionPreview | null>(null);
+  const [definition, setDefinition] = useState<Definition | null>(null);
   const [fetchError, setFetchError] = useState('');
 
   useEffect(() => {
@@ -80,50 +71,15 @@ export default function ReportForm() {
     return <div style={{ color: '#ffffff' }}>Загрузка определения...</div>;
   }
 
-  const formattedDate = definition.created_at
-    ? new Date(definition.created_at).toLocaleDateString('ru-RU', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-    : '';
-
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto' }}>
       <h2 style={{ color: '#ffffff' }}>Пожаловаться на определение</h2>
 
-      <div
-        style={{
-          border: '1px solid #2a2f3a',
-          borderRadius: '8px',
-          padding: '16px',
-          marginBottom: '24px',
-          background: '#212936',
-          color: '#ffffff',
-        }}
-      >
-        <h3 style={{ marginTop: 0 }}>{definition.word}</h3>
-        <p>{definition.definition}</p>
-        {definition.example && (
-          <blockquote
-            style={{
-              borderLeft: '4px solid #4dafff',
-              paddingLeft: '12px',
-              margin: '12px 0',
-              fontStyle: 'italic',
-              color: '#cccccc',
-            }}
-          >
-            {definition.example}
-          </blockquote>
-        )}
-        <div style={{ fontSize: '0.85rem', color: '#a0a0a0', marginTop: '12px' }}>
-          Добавлено {definition.author}, {formattedDate}
-        </div>
-        <div style={{ marginTop: '8px', fontSize: '0.85rem', color: '#a0a0a0' }}>
-          👍 {definition.upvotes} 👎 {definition.downvotes}
-        </div>
-      </div>
+      <CardSimple
+        definition={definition}
+        showDateAndAuthor={true}
+        showVotes={true}
+      />
 
       <p style={{ color: '#cccccc', marginBottom: '1rem' }}>
         Пожалуйста, выберите причину жалобы. Мы рассмотрим её в течение 24 часов.

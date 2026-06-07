@@ -9,7 +9,6 @@ interface FullMenuProps {
 const russianAlphabet = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'.split('');
 const allSymbols = [...russianAlphabet, '#'];
 
-
 export default function FullMenu({ onClose }: FullMenuProps) {
   const { user, logout } = useAuthStore();
 
@@ -30,6 +29,17 @@ export default function FullMenu({ onClose }: FullMenuProps) {
           <Link to="/add" onClick={handleLinkClick} style={{ display: 'block', marginBottom: '1rem', fontSize: '1.2rem', textDecoration: 'none', color: '#ffffff' }}>
             Добавить определение
           </Link>
+          
+          {/* Ссылка на админку (только для админов) */}
+          {user?.isAdmin && (
+            <Link to="/admin" onClick={handleLinkClick} style={{ display: 'block', marginBottom: '1rem', fontSize: '1.2rem', textDecoration: 'none', color: '#ffaa00' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256" style={{ marginRight: '8px', verticalAlign: 'middle' }}>
+                <path d="M243.32,116.69l-16-16a16,16,0,0,0-20.84-1.53L156.84,49.52a16,16,0,0,0-1.52-20.84l-16-16a16,16,0,0,0-22.63,0l-64,64a16,16,0,0,0,0,22.63l16,16a16,16,0,0,0,20.83,1.52L96.69,124,31.31,189.38A25,25,0,0,0,66.63,224.7L132,159.32l7.17,7.16a16,16,0,0,0,1.52,20.84l16,16a16,16,0,0,0,22.63,0l64-64A16,16,0,0,0,243.32,116.69ZM80,104,64,88l64-64,16,16ZM55.32,213.38a9,9,0,0,1-12.69,0,9,9,0,0,1,0-12.68L108,135.32,120.69,148ZM101,105.66,145.66,61,195,110.34,150.35,155ZM168,192l-16-16,4-4h0l56-56h0l4-4,16,16Z" />
+              </svg>
+              Админка
+            </Link>
+          )}
+
           <hr style={{ margin: '12px 0', borderColor: '#ffffff1a' }} />
           <button
             onClick={toggleDyslexicFont}
@@ -57,7 +67,7 @@ export default function FullMenu({ onClose }: FullMenuProps) {
                   key={symbol}
                   to={link}
                   onClick={handleLinkClick}
-                    className="alphabet-button"
+                  className="alphabet-button"
                   style={{ textAlign: 'center', padding: '8px 0', backgroundColor: '#1e242c', border: '1px solid #2a2f3a', textDecoration: 'none', color: '#ffffff', gridColumn: isHash ? 'span 2' : 'auto' }}
                 >
                   {symbol}

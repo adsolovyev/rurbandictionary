@@ -16,8 +16,12 @@ export default function Login() {
     e.preventDefault();
     setError('');
     try {
-      await loginUser(login, password);
-      navigate(redirectTo);
+      const user = await loginUser(login, password); // ДОБАВЛЕНО: сохраняем user
+      if (user.isAdmin) {                           // ДОБАВЛЕНО: проверка на админа
+        navigate('/admin');                         // ДОБАВЛЕНО: редирект на админку
+      } else {
+        navigate(redirectTo);
+      }
     } catch (err) {
       setError('Invalid credentials');
       void err;
