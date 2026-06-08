@@ -58,9 +58,29 @@ export default function Register() {
           />
         </div>
         {error && <div style={{ color: 'red', marginBottom: '16px' }}>{error}</div>}
-        <button type="submit" style={{ padding: '8px 16px' }}>Зарегистрироваться</button>
+        <button
+          type="submit"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            width: '100%',
+            padding: '8px 16px',
+            background: '#1e242c',
+            color: '#fff',
+            border: '1px solid #2a2f3a',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '1rem',
+          }}
+        >
+          Зарегистрироваться
+        </button>
       </form>
-      <p>Уже есть учетная запись? <a href="/login">Войти</a></p>
+      <p style={{ marginTop: '16px' }}>
+        Уже есть учетная запись? <a href="/login">Войти</a>
+      </p>
     </div>
   );
 }
