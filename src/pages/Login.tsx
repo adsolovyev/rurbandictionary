@@ -6,6 +6,7 @@ export default function Login() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [attempts, setAttempts] = useState(0); // счётчик неудачных попыток
   const navigate = useNavigate();
   const location = useLocation();
   const loginUser = useAuthStore(state => state.login);
@@ -16,14 +17,18 @@ export default function Login() {
     e.preventDefault();
     setError('');
     try {
-      const user = await loginUser(login, password); // ДОБАВЛЕНО: сохраняем user
-      if (user.isAdmin) {                           // ДОБАВЛЕНО: проверка на админа
-        navigate('/admin');                         // ДОБАВЛЕНО: редирект на админку
+      const user = await loginUser(login, password);
+      // успешный вход – сбрасываем счётчик
+      setAttempts(0);
+      if (user.isAdmin) {
+        navigate('/admin');
       } else {
         navigate(redirectTo);
       }
     } catch (err) {
-      setError('Invalid credentials');
+      // неудачная попытка – увеличиваем счётчик
+      setAttempts(prev => prev + 1);
+      setError('Поля заполнены неверно');
       void err;
     }
   };
@@ -55,7 +60,16 @@ export default function Login() {
         {error && <div style={{ color: 'red', marginBottom: '16px' }}>{error}</div>}
         <button type="submit" style={{ padding: '8px 16px' }}>Войти</button>
       </form>
-      <p>Нет учетной записи? <a href="/register">Зарегистрироваться</a></p>
+      <p>
+        Нет учетной записи? <a href="/register">Зарегистрироваться</a>
+      </p>
+      {/* Показываем подсказку о сбросе пароля только после 2+ неудачных попыток */}
+      {attempts >= 2 && (
+        <div style={{ marginTop: '16px', color: '#ffaa00', fontSize: '0.9rem' }}>
+          Забыли пароль? Для смены пароля обратитесь к администратору. 
+          Потребуется дополнительная информация об учетной записи.
+        </div>
+      )}
     </div>
   );
 }

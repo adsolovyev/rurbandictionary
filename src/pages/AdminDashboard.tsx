@@ -57,7 +57,7 @@ export default function AdminDashboard() {
   if (loading) return <div style={{ color: '#fff' }}>Загрузка...</div>;
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}>
       <h1>Панель администратора</h1>
       <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
         {/* Левая колонка – модерация определений */}
@@ -73,31 +73,31 @@ export default function AdminDashboard() {
               <h3>Последние новые определения</h3>
               <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', tableLayout: 'fixed' }}>
                 <thead>
-                    <tr>
+                  <tr>
                     <th style={{ textAlign: 'left', padding: '8px', width: '40%' }}>Слово</th>
                     <th style={{ textAlign: 'left', padding: '8px', width: '30%' }}>Автор</th>
                     <th style={{ textAlign: 'left', padding: '8px', width: '30%' }}>Дата</th>
-                    </tr>
+                  </tr>
                 </thead>
                 <tbody>
-                    {recentPending.map(item => (
+                  {recentPending.map(item => (
                     <tr key={item.id}>
-                        <td style={{ padding: '8px', wordBreak: 'break-word' }}>
+                      <td style={{ padding: '8px', wordBreak: 'break-word' }}>
                         <Link to={`/admin/pending?id=${item.id}`} style={{ color: '#4dafff' }}>
-                            {item.word}
+                          {item.word}
                         </Link>
-                        </td>
-                        <td style={{ padding: '8px', wordBreak: 'break-word' }}>{item.author}</td>
-                        <td style={{ padding: '8px', wordBreak: 'break-word' }}>{new Date(item.created_at).toLocaleDateString()}</td>
+                      </td>
+                      <td style={{ padding: '8px', wordBreak: 'break-word' }}>{item.author}</td>
+                      <td style={{ padding: '8px', wordBreak: 'break-word' }}>{new Date(item.created_at).toLocaleDateString()}</td>
                     </tr>
-                    ))}
+                  ))}
                 </tbody>
-            </table>
+              </table>
             </div>
           )}
         </div>
 
-        {/* Правая колонка – жалобы */}
+        {/* Средняя колонка – жалобы */}
         <div style={{ flex: 1, minWidth: '300px' }}>
           <div style={{ background: '#2a2f3a', borderRadius: '8px', padding: '16px', marginBottom: '20px' }}>
             <Link to="/admin/reports" style={{ textDecoration: 'none', color: '#fff' }}>
@@ -110,28 +110,38 @@ export default function AdminDashboard() {
               <h3>Последние жалобы</h3>
               <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', tableLayout: 'fixed' }}>
                 <thead>
-                    <tr>
+                  <tr>
                     <th style={{ textAlign: 'left', padding: '8px', width: '40%' }}>Слово</th>
                     <th style={{ textAlign: 'left', padding: '8px', width: '30%' }}>Причина</th>
                     <th style={{ textAlign: 'left', padding: '8px', width: '30%' }}>Дата</th>
-                    </tr>
+                  </tr>
                 </thead>
                 <tbody>
-                    {recentReports.map(item => (
+                  {recentReports.map(item => (
                     <tr key={item.id}>
-                        <td style={{ padding: '8px', wordBreak: 'break-word' }}>
+                      <td style={{ padding: '8px', wordBreak: 'break-word' }}>
                         <Link to={`/admin/reports?id=${item.id}`} style={{ color: '#4dafff' }}>
-                            {item.definition_word}
+                          {item.definition_word}
                         </Link>
-                        </td>
-                        <td style={{ padding: '8px', wordBreak: 'break-word' }}>{item.reason}</td>
-                        <td style={{ padding: '8px', wordBreak: 'break-word' }}>{new Date(item.created_at).toLocaleDateString()}</td>
+                      </td>
+                      <td style={{ padding: '8px', wordBreak: 'break-word' }}>{item.reason}</td>
+                      <td style={{ padding: '8px', wordBreak: 'break-word' }}>{new Date(item.created_at).toLocaleDateString()}</td>
                     </tr>
-                    ))}
+                  ))}
                 </tbody>
-            </table>
+              </table>
             </div>
           )}
+        </div>
+
+        {/* Правая колонка – управление пользователями */}
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <div style={{ background: '#2a2f3a', borderRadius: '8px', padding: '16px', marginBottom: '20px' }}>
+            <Link to="/admin/users" style={{ textDecoration: 'none', color: '#fff' }}>
+              <h2>Пользователи</h2>
+            </Link>
+            <p>Сброс паролей, просмотр учётных записей</p>
+          </div>
         </div>
       </div>
     </div>

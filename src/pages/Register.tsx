@@ -15,10 +15,10 @@ export default function Register() {
     setError('');
     try {
       await registerUser(login, email, password);
-      alert('Registration successful! Please log in.');
+      alert('Регистрация прошла успешно! Можете войти в систему.');
       navigate('/login');
     } catch (err) {
-      setError('Registration failed. Try a different login/email.');
+      setError('Ошибка регистрации: попробуйте изменить почту или имя пользователя');
       void err;
     }
   };

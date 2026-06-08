@@ -22,6 +22,7 @@ import NonCyrillicBrowse from './pages/NonCyrillicBrowse';
 import { useSettingsStore } from './stores/settingsStore';
 import UserDefinitions from './pages/UserDefinitions';
 import Help from './pages/Help';
+import AdminUsers from './pages/AdminUsers';
 
 function App() {
   const fetchMe = useAuthStore(state => state.fetchMe);
@@ -58,6 +59,7 @@ function App() {
             <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/pending" element={<ProtectedRoute requireAdmin><AdminPending /></ProtectedRoute>} />
             <Route path="/admin/reports" element={<ProtectedRoute requireAdmin><AdminReports /></ProtectedRoute>} />
+            <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
             <Route path="/help" element={<Help />} />
           </Routes>
         </div>
