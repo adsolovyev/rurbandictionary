@@ -132,9 +132,9 @@ export default function AdminReports() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1 style={{ color: '#fff' }}>Модерация жалоб</h1>
         <div>
-          <button onClick={goPrev} disabled={currentIndex === 0} style={{ marginRight: '8px', ...buttonStyle }}>← Назад</button>
+          <button onClick={goPrev} disabled={currentIndex === 0} style={{ marginRight: '8px', ...buttonStyle }}>←</button>
           <span style={{ color: '#fff' }}>{currentNumber} / {total}</span>
-          <button onClick={goNext} disabled={currentIndex === total - 1} style={{ marginLeft: '8px', ...buttonStyle }}>Вперёд →</button>
+          <button onClick={goNext} disabled={currentIndex === total - 1} style={{ marginLeft: '8px', ...buttonStyle }}>→</button>
         </div>
       </div>
 

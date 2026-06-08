@@ -140,7 +140,7 @@ export default function AdminDashboard() {
             <Link to="/admin/users" style={{ textDecoration: 'none', color: '#fff' }}>
               <h2>Пользователи</h2>
             </Link>
-            <p>Сброс паролей, просмотр учётных записей</p>
+            <p>Смена пароля пользователя</p>
           </div>
         </div>
       </div>

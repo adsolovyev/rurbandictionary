@@ -8,6 +8,7 @@ export default function AlphabetBrowse() {
   const [words, setWords] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
+  const [inputPage, setInputPage] = useState('');
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const isMounted = useRef(true);
 
@@ -26,6 +27,7 @@ export default function AlphabetBrowse() {
         if (ignore || !isMounted.current) return;
         setWords(data.words);
         setTotalPages(data.totalPages);
+        setInputPage(String(currentPage));
       } catch (err) {
         console.error(err);
       } finally {
@@ -39,6 +41,18 @@ export default function AlphabetBrowse() {
   const goToPage = (page: number) => {
     if (page < 1 || page > totalPages) return;
     setSearchParams({ page: String(page) });
+  };
+
+  const handlePageInputSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const page = parseInt(inputPage, 10);
+      if (!isNaN(page) && page >= 1 && page <= totalPages) {
+        goToPage(page);
+      } else {
+        setInputPage(String(currentPage));
+      }
+    }
   };
 
   if (loading) return <div style={{ color: '#fff' }}>Загрузка...</div>;
@@ -57,13 +71,39 @@ export default function AlphabetBrowse() {
               </Link>
             ))}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '16px' }}>
-            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} style={pageButtonStyle}>
-              ← Назад
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '16px', flexWrap: 'wrap' }}>
+            <button onClick={() => goToPage(1)} disabled={currentPage === 1} style={pageButtonStyle}>
+              ≪
             </button>
-            <span style={{ color: '#fff' }}>Страница {currentPage} из {totalPages}</span>
+            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} style={pageButtonStyle}>
+              ←
+            </button>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ color: '#fff' }}>Страница</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={inputPage}
+                onChange={(e) => setInputPage(e.target.value.replace(/[^0-9]/g, ''))}
+                onKeyDown={handlePageInputSubmit}
+                style={{
+                  width: '60px',
+                  padding: '4px',
+                  textAlign: 'center',
+                  background: '#1e242c',
+                  color: '#fff',
+                  border: '1px solid #2a2f3a',
+                  borderRadius: '4px',
+                }}
+              />
+              <span style={{ color: '#fff' }}>из {totalPages}</span>
+            </div>
             <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} style={pageButtonStyle}>
-              Вперёд →
+              →
+            </button>
+            <button onClick={() => goToPage(totalPages)} disabled={currentPage === totalPages} style={pageButtonStyle}>
+              ≫
             </button>
           </div>
         </>
