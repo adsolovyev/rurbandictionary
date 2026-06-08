@@ -78,8 +78,8 @@ export const reportDefinition = async (definitionId: number, reason: string, com
 };
 
 // Получить уникальные слова по букве (алфавитный указатель)
-export const getWordsByLetter = async (letter: string): Promise<string[]> => {
-  const res = await fetch(`${API_BASE}/browse?letter=${encodeURIComponent(letter)}`, {
+export const getWordsByLetter = async (letter: string, page = 1, limit = 20): Promise<{ words: string[], total: number, totalPages: number }> => {
+  const res = await fetch(`${API_BASE}/browse?letter=${encodeURIComponent(letter)}&page=${page}&limit=${limit}`, {
     credentials: 'include',
   });
   if (!res.ok) throw new Error('Failed to fetch words by letter');
@@ -107,7 +107,8 @@ export const getRandomWord = async (): Promise<string> => {
 };
 
 export const getNonCyrillicWords = async (): Promise<string[]> => {
-  return getWordsByLetter('#');
+  const data = await getWordsByLetter('#', 1, 100); // загружаем до 100 слов
+  return data.words;
 };
 
 export const getDefinitionsByAuthor = async (author: string, page = 1, limit = 10) => {
