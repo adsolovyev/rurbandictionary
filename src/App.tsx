@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuthStore } from './stores/authStore';
+import { useSettingsStore } from './stores/settingsStore';
+import { useThemeStore } from './stores/themeStore';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectRoute';
@@ -17,18 +19,17 @@ import ResetPassword from './pages/ResetPassword';
 import AdminReports from './pages/AdminReports';
 import AdminPending from './pages/AdminPending';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminUsers from './pages/AdminUsers';
 import Alphabet from './pages/Alphabet';
 import NonCyrillicBrowse from './pages/NonCyrillicBrowse';
-import { useSettingsStore } from './stores/settingsStore';
 import UserDefinitions from './pages/UserDefinitions';
 import Help from './pages/Help';
-import AdminUsers from './pages/AdminUsers';
-import { useWordsStore } from './stores/wordsStore';
 
 function App() {
   const fetchMe = useAuthStore(state => state.fetchMe);
   const fetchSettings = useSettingsStore(state => state.fetchSettings);
   const user = useAuthStore(state => state.user);
+  const { theme } = useThemeStore();
 
   useEffect(() => {
     fetchMe();
@@ -38,10 +39,14 @@ function App() {
     if (user) fetchSettings();
   }, [user, fetchSettings]);
 
-  const fetchWords = useWordsStore(state => state.fetchWords);
+  // Применяем класс темы к body (без пустой строки)
   useEffect(() => {
-    fetchWords();
-  }, [fetchWords]);
+    if (theme === 'light') {
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+    }
+  }, [theme]);
 
   return (
     <BrowserRouter>
@@ -62,11 +67,12 @@ function App() {
             <Route path="/alphabet" element={<Alphabet />} />
             <Route path="/browse/non-cyrillic" element={<NonCyrillicBrowse />} />
             <Route path="/user/:login" element={<UserDefinitions />} />
+            <Route path="/help" element={<Help />} />
+            {/* Админские маршруты */}
             <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/pending" element={<ProtectedRoute requireAdmin><AdminPending /></ProtectedRoute>} />
             <Route path="/admin/reports" element={<ProtectedRoute requireAdmin><AdminReports /></ProtectedRoute>} />
             <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
-            <Route path="/help" element={<Help />} />
           </Routes>
         </div>
       </main>

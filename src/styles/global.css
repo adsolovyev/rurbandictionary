@@ -109,3 +109,35 @@ a:hover, .clickable-link:hover {
   background-color: rgb(185, 28, 28) !important;
 }
 
+/* Светлая тема */
+.light-theme {
+  --text-color: #000000;
+  --blockquote-color: #555;
+  --bg-card: #ffffff;
+  --border-color: #ddd;
+  --vote-bg: #f0f0f0;
+  --vote-border: #ccc;
+  --link-color: #0066cc;
+}
+
+/* По умолчанию (тёмная тема) используем существующие цвета как переменные */
+:root {
+  --text-color: #ffffff;
+  --blockquote-color: #cccccc;
+  --bg-card: #212936;
+  --border-color: #2a2f3a;
+  --vote-bg: #1e242c;
+  --vote-border: #2a2f3a;
+  --link-color: #4dafff;
+}
+
+/* Применяем переменные к body и контейнерам */
+body {
+  background-color: #161a20; /* тёмный фон */
+  color: var(--text-color);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+body.light-theme {
+  background-color: #eae7e1;
+}

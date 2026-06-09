@@ -40,18 +40,13 @@ export default function Home() {
 
   const loadMore = async () => {
     if (loadingMore || !hasMore) return;
-
-    // Если в текущем буфере есть ещё не показанные записи, просто увеличиваем видимую часть
     if (visibleCount < definitions.length) {
       setVisibleCount(prev => Math.min(prev + 10, definitions.length));
       return;
     }
-
-    // Загружаем следующую страницу
     setLoadingMore(true);
     const newData = await loadPage(page);
     if (!isMounted.current) return;
-
     if (newData.length === 0) {
       setHasMore(false);
     } else {
@@ -65,11 +60,11 @@ export default function Home() {
   };
 
   if (loadingInitial) {
-    return <div style={{ color: '#fff' }}>Загрузка...</div>;
+    return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
   }
 
   if (definitions.length === 0 && !loadingInitial) {
-    return <div style={{ color: '#fff' }}>Нет определений</div>;
+    return <div style={{ color: 'var(--text-color)' }}>Нет определений</div>;
   }
 
   const displayedDefs = definitions.slice(0, visibleCount);
@@ -78,7 +73,7 @@ export default function Home() {
   return (
     <div>
       {displayedDefs.map(def => <Card key={def.id} {...def} />)}
-      {showLoadMore && (
+      {showLoadMore ? (
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
           <button
             onClick={loadMore}
@@ -88,12 +83,10 @@ export default function Home() {
             {loadingMore ? 'Загрузка...' : 'Загрузить ещё'}
           </button>
         </div>
-      )}
-      {!showLoadMore && (
-        <div style={{ textAlign: 'center', marginTop: '32px', marginBottom: '32px', color: '#aaa' }}>
+      ) : (
+        <div style={{ textAlign: 'center', marginTop: '32px', marginBottom: '32px', color: 'var(--blockquote-color)' }}>
           <p>Ой, кажется, вы всё просмотрели!</p>
-          <p>Мы могли бы предложить потрогать траву, но это может быть небезопасно... </p>
-          <p>Как насчет добавить свои определения, воспользовавшись <strong>Меню</strong>?</p>
+          <p>Вы можете добавить свои определения, воспользовавшись <strong>Меню</strong>.</p>
         </div>
       )}
     </div>
