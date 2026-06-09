@@ -240,3 +240,9 @@ export const getLatestDefinitions = async (page = 1, limit = 20): Promise<Defini
   if (!res.ok) throw new Error('Failed to fetch latest definitions');
   return res.json();
 };
+
+export const getActiveWords = async (): Promise<string[]> => {
+  const res = await fetch(`${API_BASE}/words/active`, { credentials: 'include' });
+  if (!res.ok) throw new Error('Failed to fetch active words');
+  return res.json();
+};

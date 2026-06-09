@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { vote } from '../services/api';
 import CopyLinkModal from './CopyLinkModal';
+import { useWordsStore } from '../stores/wordsStore';
+import LinkedText from './LinkedText';
 
 interface CardProps {
   id: number;
@@ -37,6 +39,7 @@ export default function Card({
     return null;
   });
   const [showModal, setShowModal] = useState(false);
+  const { words } = useWordsStore();
 
   const handleVote = async (type: 'up' | 'down') => {
     if (!user) {
@@ -86,9 +89,9 @@ export default function Card({
 
   const formattedDate = created_at
     ? new Date(created_at).toLocaleDateString('ru-RU', {
-        year: '2-digit',  // '26' вместо '2026'
-        month: '2-digit', // '06'
-        day: '2-digit',   // '04'
+        year: '2-digit',
+        month: '2-digit',
+        day: '2-digit',
       })
     : '';
 
@@ -104,7 +107,6 @@ export default function Card({
           color: '#ffffff',
         }}
       >
-        {/* Верхняя строка: слово + динамик слева; иконки справа */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <h2 style={{ margin: 0, fontSize: '2.2rem', color: '#ffffff' }}>{word}</h2>
@@ -140,7 +142,9 @@ export default function Card({
           </div>
         </div>
 
-        <p>{definition}</p>
+        <p>
+          <LinkedText text={definition} words={words} excludeWord={word} />
+        </p>
 
         <blockquote
           style={{
@@ -151,10 +155,9 @@ export default function Card({
             color: '#cccccc',
           }}
         >
-          {example}
+          <LinkedText text={example} words={words} excludeWord={word} />
         </blockquote>
 
-        {/* Нижняя строка: подпись слева, голосование справа */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
           <div style={{ fontSize: '0.85rem', color: '#a0a0a0' }}>
             <span
@@ -175,7 +178,6 @@ export default function Card({
             , {formattedDate}
           </div>
 
-          {/* Кнопки голосования */}
           <div
             style={{
               display: 'flex',

@@ -23,6 +23,7 @@ import { useSettingsStore } from './stores/settingsStore';
 import UserDefinitions from './pages/UserDefinitions';
 import Help from './pages/Help';
 import AdminUsers from './pages/AdminUsers';
+import { useWordsStore } from './stores/wordsStore';
 
 function App() {
   const fetchMe = useAuthStore(state => state.fetchMe);
@@ -36,6 +37,11 @@ function App() {
   useEffect(() => {
     if (user) fetchSettings();
   }, [user, fetchSettings]);
+
+  const fetchWords = useWordsStore(state => state.fetchWords);
+  useEffect(() => {
+    fetchWords();
+  }, [fetchWords]);
 
   return (
     <BrowserRouter>
