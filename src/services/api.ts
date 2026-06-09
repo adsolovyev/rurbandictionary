@@ -232,3 +232,11 @@ export const banUser = async (userId: number): Promise<void> => {
   });
   if (!res.ok) throw new Error('Failed to ban user');
 };
+
+export const getLatestDefinitions = async (page = 1, limit = 20): Promise<Definition[]> => {
+  const res = await fetch(`${API_BASE}/definitions/latest?page=${page}&limit=${limit}`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch latest definitions');
+  return res.json();
+};

@@ -1,58 +1,101 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Card from '../components/Card';
-import { getRandomDefinitions } from '../services/api';
-import type { Definition } from '../services/api';  // тип импортируем отдельно
+import { getLatestDefinitions } from '../services/api';
+import type { Definition } from '../services/api';
 
 export default function Home() {
   const [definitions, setDefinitions] = useState<Definition[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(10);
+  const [page, setPage] = useState(1);
+  const [loadingInitial, setLoadingInitial] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const isMounted = useRef(true);
 
-  useEffect(() => {
-    const loadDefinitions = async () => {
-      setLoading(true);
-      try {
-        const data = await getRandomDefinitions(10);
-        setDefinitions(data);
-      } catch (error) {
-        console.error('Failed to load definitions:', error);
-      }
-      setLoading(false);
-    };
-    loadDefinitions();
-  }, []);
-
-  const handleReshuffle = () => {
-    setLoading(true);
-    getRandomDefinitions(10).then(data => {
-      setDefinitions(data);
-      setLoading(false);
-    }).catch(error => {
-      console.error('Failed to reshuffle definitions:', error);
-    });
+  const loadPage = async (pageNum: number): Promise<Definition[]> => {
+    try {
+      const data = await getLatestDefinitions(pageNum, 20);
+      if (!isMounted.current) return [];
+      if (data.length === 0) setHasMore(false);
+      return data;
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
   };
 
-  if (loading) return <div style={{ color: '#ffffff' }}>Загрузка...</div>;
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const data = await loadPage(1);
+      if (mounted) {
+        setDefinitions(data);
+        setVisibleCount(Math.min(10, data.length));
+        setPage(2);
+        setLoadingInitial(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  const loadMore = async () => {
+    if (loadingMore || !hasMore) return;
+
+    // Если в текущем буфере есть ещё не показанные записи, просто увеличиваем видимую часть
+    if (visibleCount < definitions.length) {
+      setVisibleCount(prev => Math.min(prev + 10, definitions.length));
+      return;
+    }
+
+    // Загружаем следующую страницу
+    setLoadingMore(true);
+    const newData = await loadPage(page);
+    if (!isMounted.current) return;
+
+    if (newData.length === 0) {
+      setHasMore(false);
+    } else {
+      const existingIds = new Set(definitions.map(d => d.id));
+      const uniqueNew = newData.filter(d => !existingIds.has(d.id));
+      setDefinitions(prev => [...prev, ...uniqueNew]);
+      setVisibleCount(prev => prev + 10);
+      setPage(prev => prev + 1);
+    }
+    setLoadingMore(false);
+  };
+
+  if (loadingInitial) {
+    return <div style={{ color: '#fff' }}>Загрузка...</div>;
+  }
+
+  if (definitions.length === 0 && !loadingInitial) {
+    return <div style={{ color: '#fff' }}>Нет определений</div>;
+  }
+
+  const displayedDefs = definitions.slice(0, visibleCount);
+  const showLoadMore = hasMore || visibleCount < definitions.length;
 
   return (
     <div>
-      {definitions.map(def => (
-        <Card key={def.id} {...def} />
-      ))}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
-        <button onClick={handleReshuffle} className="reshuffle-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            fill="currentColor"
-            viewBox="0 0 256 256"
-            className="reshuffle-icon"
+      {displayedDefs.map(def => <Card key={def.id} {...def} />)}
+      {showLoadMore && (
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+          <button
+            onClick={loadMore}
+            disabled={loadingMore}
+            style={{ padding: '6px 12px', cursor: 'pointer' }}
           >
-            <path d="M237.66,178.34a8,8,0,0,1,0,11.32l-24,24a8,8,0,0,1-11.32-11.32L212.69,192H200.94a72.12,72.12,0,0,1-58.59-30.15l-41.72-58.4A56.1,56.1,0,0,0,55.06,80H32a8,8,0,0,1,0-16H55.06a72.12,72.12,0,0,1,58.59,30.15l41.72,58.4A56.1,56.1,0,0,0,200.94,176h11.75l-10.35-10.34a8,8,0,0,1,11.32-11.32ZM143,107a8,8,0,0,0,11.16-1.86l1.2-1.67A56.1,56.1,0,0,1,200.94,80h11.75L202.34,90.34a8,8,0,0,0,11.32,11.32l24-24a8,8,0,0,0,0-11.32l-24-24a8,8,0,0,0-11.32,11.32L212.69,64H200.94a72.12,72.12,0,0,0-58.59,30.15l-1.2,1.67A8,8,0,0,0,143,107Zm-30,42a8,8,0,0,0-11.16,1.86l-1.2,1.67A56.1,56.1,0,0,1,55.06,176H32a8,8,0,0,0,0,16H55.06a72.12,72.12,0,0,0,58.59-30.15l1.2-1.67A8,8,0,0,0,113,149Z" />
-          </svg>
-          <span>Перемешать</span>
-        </button>
-      </div>
+            {loadingMore ? 'Загрузка...' : 'Загрузить ещё'}
+          </button>
+        </div>
+      )}
+      {!showLoadMore && (
+        <div style={{ textAlign: 'center', marginTop: '32px', marginBottom: '32px', color: '#aaa' }}>
+          <p>Ой, кажется, вы всё просмотрели!</p>
+          <p>Мы могли бы предложить потрогать траву, но это может быть небезопасно... </p>
+          <p>Как насчет добавить свои определения, воспользовавшись <strong>Меню</strong>?</p>
+        </div>
+      )}
     </div>
   );
 }
