@@ -14,6 +14,11 @@ export interface Definition {
   user_vote?: number | null;   // добавить
 }
 
+export interface Suggestion {
+  word: string;
+  definition: string;
+}
+
 // Получить случайные определения (главная страница)
 export const getRandomDefinitions = async (limit = 10): Promise<Definition[]> => {
   const res = await fetch(`${API_BASE}/definitions/random?limit=${limit}`, {
@@ -87,7 +92,7 @@ export const getWordsByLetter = async (letter: string, page = 1, limit = 20): Pr
 };
 
 // Получить подсказки для поиска
-export const getSuggestions = async (query: string): Promise<string[]> => {
+export const getSuggestions = async (query: string): Promise<Suggestion[]> => {
   if (!query) return [];
   const res = await fetch(`${API_BASE}/suggest?q=${encodeURIComponent(query)}`, {
     credentials: 'include',

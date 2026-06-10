@@ -141,3 +141,17 @@ body {
 body.light-theme {
   background-color: #eae7e1;
 }
+
+.random-button {
+  color: #a0a0a0;          /* начальный серый цвет */
+  transition: color 0.2s ease;
+}
+.random-button:hover {
+  color: #ffffff;          /* белый при наведении */
+}
+.random-button:hover .random-icon {
+  transform: rotate(180deg); /* поворот иконки при наведении */
+}
+.random-icon {
+  transition: transform 0.3s ease;
+}
