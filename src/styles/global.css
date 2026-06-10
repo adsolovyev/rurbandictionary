@@ -155,3 +155,35 @@ body.light-theme {
 .random-icon {
   transition: transform 0.3s ease;
 }
+
+/* Тёмная тема (по умолчанию) */
+:root {
+  --text-color: #ffffff;
+  --blockquote-color: #cccccc;
+  --bg-card: #212936;
+  --border-color: #2a2f3a;
+  --vote-bg: #1e242c;
+  --vote-border: #2a2f3a;
+  --link-color: #4dafff;
+}
+
+/* Светлая тема */
+.light-theme {
+  --text-color: #000000;
+  --blockquote-color: #555;
+  --bg-card: #ffffff;
+  --border-color: #e0e0e0;
+  --vote-bg: #f3f4f6;
+  --vote-border: #e5e7eb;
+  --link-color: #0066cc;
+}
+
+/* Фон страницы */
+body {
+  background-color: #161a20;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+body.light-theme {
+  background-color: #eae7e1;
+}

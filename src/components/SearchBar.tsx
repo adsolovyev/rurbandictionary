@@ -101,14 +101,14 @@ export default function SearchBar() {
                 justifyContent: 'center',
                 cursor: 'pointer',
                 transition: 'color 0.2s',
-                color: '#a0a0a0',
+                color: '#ffffff',
                 marginLeft: '4px',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.color = '#EFFF00';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#a0a0a0';
+                e.currentTarget.style.color = '#ffffff';
               }}
               onClick={() => {
                 setQuery('');
@@ -130,7 +130,7 @@ export default function SearchBar() {
               xmlns="http://www.w3.org/2000/svg"
               width="20"
               height="20"
-              fill="#a0a0a0"
+              fill="#ffffff"
               viewBox="0 0 256 256"
               style={{ flexShrink: 0, marginLeft: '4px' }}
             >

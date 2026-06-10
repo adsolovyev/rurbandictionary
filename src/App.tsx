@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuthStore } from './stores/authStore';
 import { useSettingsStore } from './stores/settingsStore';
 import { useThemeStore } from './stores/themeStore';
+import { useWordsStore } from './stores/wordsStore'; // <-- добавить
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectRoute';
@@ -28,6 +29,7 @@ import Help from './pages/Help';
 function App() {
   const fetchMe = useAuthStore(state => state.fetchMe);
   const fetchSettings = useSettingsStore(state => state.fetchSettings);
+  const fetchWords = useWordsStore(state => state.fetchWords); // <-- добавить
   const user = useAuthStore(state => state.user);
   const { theme } = useThemeStore();
 
@@ -39,7 +41,10 @@ function App() {
     if (user) fetchSettings();
   }, [user, fetchSettings]);
 
-  // Применяем класс темы к body (без пустой строки)
+  useEffect(() => {
+    fetchWords(); // <-- загружаем слова для подсветки
+  }, [fetchWords]);
+
   useEffect(() => {
     if (theme === 'light') {
       document.body.classList.add('light-theme');
