@@ -80,8 +80,7 @@ export default function AdminReports() {
       setMessage({ text: `Жалоба #${currentReport.id} закрыта`, type: 'success' });
       setTimeout(() => setMessage(null), 3000);
       removeCurrentAndMove();
-    } catch (err) {
-      void err;
+    } catch {
       setMessage({ text: `Ошибка закрытия жалобы #${currentReport.id}`, type: 'error' });
       setTimeout(() => setMessage(null), 3000);
     }
@@ -94,8 +93,7 @@ export default function AdminReports() {
       setMessage({ text: `Определение "${currentReport.word}" заблокировано`, type: 'success' });
       setTimeout(() => setMessage(null), 3000);
       removeCurrentAndMove();
-    } catch (err) {
-      void err;
+    } catch {
       setMessage({ text: `Ошибка блокировки определения`, type: 'error' });
       setTimeout(() => setMessage(null), 3000);
     }
@@ -108,8 +106,7 @@ export default function AdminReports() {
       setMessage({ text: `Пользователь ${currentReport.author_login} заблокирован`, type: 'success' });
       setTimeout(() => setMessage(null), 3000);
       removeCurrentAndMove();
-    } catch (err) {
-      void err;
+    } catch {
       setMessage({ text: `Ошибка блокировки пользователя`, type: 'error' });
       setTimeout(() => setMessage(null), 3000);
     }
@@ -118,9 +115,9 @@ export default function AdminReports() {
   const contactUserWIP = () => alert('Функция связи с пользователем в разработке');
   const contactAuthorWIP = () => alert('Функция связи с автором в разработке');
 
-  if (loading) return <div style={{ color: '#fff' }}>Загрузка...</div>;
+  if (loading) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
   if (!currentReport && reports.length === 0) {
-    return <div style={{ color: '#fff', padding: '20px' }}>Нет неразрешённых жалоб.</div>;
+    return <div style={{ color: 'var(--text-color)', padding: '20px' }}>Нет неразрешённых жалоб.</div>;
   }
   if (!currentReport) return null;
 
@@ -130,10 +127,10 @@ export default function AdminReports() {
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 style={{ color: '#fff' }}>Модерация жалоб</h1>
+        <h1 style={{ color: 'var(--text-color)' }}>Модерация жалоб</h1>
         <div>
           <button onClick={goPrev} disabled={currentIndex === 0} style={{ marginRight: '8px', ...buttonStyle }}>←</button>
-          <span style={{ color: '#fff' }}>{currentNumber} / {total}</span>
+          <span style={{ color: 'var(--text-color)' }}>{currentNumber} / {total}</span>
           <button onClick={goNext} disabled={currentIndex === total - 1} style={{ marginLeft: '8px', ...buttonStyle }}>→</button>
         </div>
       </div>
@@ -155,16 +152,16 @@ export default function AdminReports() {
         showVotes={true}
       />
 
-      <div style={{ marginTop: '16px', padding: '12px', background: '#2a2f3a', borderRadius: '8px' }}>
-        <h3>Информация о жалобе</h3>
-        <p><strong>Причина:</strong> {currentReport.reason}</p>
-        {currentReport.comment && <p><strong>Комментарий репортёра:</strong> {currentReport.comment}</p>}
-        <p><strong>Дата жалобы:</strong> {new Date(currentReport.created_at).toLocaleString()}</p>
-        <hr style={{ borderColor: '#444', margin: '12px 0' }} />
-        <p><strong>Автор определения:</strong> {currentReport.author_login} (ID: {currentReport.author_id})</p>
-        <p><strong>Статус автора:</strong> {currentReport.is_banned ? 'Забанен' : 'Активен'}</p>
-        <p><strong>Активных определений автора:</strong> {currentReport.author_definitions_count}</p>
-        <p><strong>Активных жалоб на автора:</strong> {currentReport.author_reports_count}</p>
+      <div style={{ marginTop: '16px', padding: '12px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+        <h3 style={{ color: 'var(--text-color)' }}>Информация о жалобе</h3>
+        <p><strong>Причина:</strong> <span style={{ color: 'var(--text-color)' }}>{currentReport.reason}</span></p>
+        {currentReport.comment && <p><strong>Комментарий репортёра:</strong> <span style={{ color: 'var(--text-color)' }}>{currentReport.comment}</span></p>}
+        <p><strong>Дата жалобы:</strong> <span style={{ color: 'var(--text-color)' }}>{new Date(currentReport.created_at).toLocaleString()}</span></p>
+        <hr style={{ borderColor: 'var(--border-color)', margin: '12px 0' }} />
+        <p><strong>Автор определения:</strong> <span style={{ color: 'var(--text-color)' }}>{currentReport.author_login} (ID: {currentReport.author_id})</span></p>
+        <p><strong>Статус автора:</strong> <span style={{ color: 'var(--text-color)' }}>{currentReport.is_banned ? 'Забанен' : 'Активен'}</span></p>
+        <p><strong>Активных определений автора:</strong> <span style={{ color: 'var(--text-color)' }}>{currentReport.author_definitions_count}</span></p>
+        <p><strong>Активных жалоб на автора:</strong> <span style={{ color: 'var(--text-color)' }}>{currentReport.author_reports_count}</span></p>
       </div>
 
       <div style={{ marginTop: '20px' }}>
@@ -175,9 +172,9 @@ export default function AdminReports() {
           style={{
             width: '100%',
             padding: '8px',
-            backgroundColor: '#1e242c',
-            border: '1px solid #2a2f3a',
-            color: '#fff',
+            backgroundColor: 'var(--vote-bg)',
+            border: '1px solid var(--border-color)',
+            color: 'var(--text-color)',
             borderRadius: '4px',
           }}
           placeholder="Причина закрытия (необязательно)"
@@ -198,12 +195,12 @@ export default function AdminReports() {
 }
 
 const buttonStyle = {
-  background: '#2a2f3a',
-  border: 'none',
+  background: 'var(--vote-bg)',
+  border: '1px solid var(--border-color)',
   padding: '6px 12px',
   borderRadius: '4px',
   cursor: 'pointer',
-  color: '#fff',
+  color: 'var(--text-color)',
 } as const;
 
 const actionButtonStyle = {

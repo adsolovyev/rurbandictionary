@@ -8,14 +8,16 @@ interface ThemeState {
   toggleTheme: () => void;
 }
 
+// Хранилище темы (светлая/тёмная) с сохранением в localStorage
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      theme: 'dark',
+      theme: 'dark', // начальное значение
+      // Переключает тему: dark ↔ light
       toggleTheme: () => set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
     }),
     {
-      name: 'theme-storage',
+      name: 'theme-storage', // ключ в localStorage
     }
   )
 );

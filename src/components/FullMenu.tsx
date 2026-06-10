@@ -11,7 +11,6 @@ const allSymbols = [...russianAlphabet, '#'];
 
 export default function FullMenu({ onClose }: FullMenuProps) {
   const { user, logout } = useAuthStore();
-
   const handleLinkClick = () => onClose();
   const handleLogout = async () => {
     await logout();
@@ -29,8 +28,6 @@ export default function FullMenu({ onClose }: FullMenuProps) {
           <Link to="/add" onClick={handleLinkClick} style={{ display: 'block', marginBottom: '1rem', fontSize: '1.2rem', textDecoration: 'none', color: '#ffffff' }}>
             Добавить определение
           </Link>
-          
-          {/* Ссылка на админку (только для админов) */}
           {user?.isAdmin && (
             <Link to="/admin" onClick={handleLinkClick} style={{ display: 'block', marginBottom: '1rem', fontSize: '1.2rem', textDecoration: 'none', color: '#ffaa00' }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256" style={{ marginRight: '8px', verticalAlign: 'middle' }}>
@@ -60,7 +57,17 @@ export default function FullMenu({ onClose }: FullMenuProps) {
         </div>
         <div style={{ flex: '2', minWidth: '200px', maxWidth: '800px', margin: '0 auto' }}>
           <h3 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#ffffff' }}>Алфавитный указатель</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 0, backgroundColor: '#2a2f3a', border: '1px solid #2a2f3a', borderRadius: '8px', overflow: 'hidden' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(5, 1fr)',
+              gap: 0,
+              backgroundColor: '#2a2f3a',
+              border: '1px solid #2a2f3a',
+              borderRadius: '16px',
+              overflow: 'hidden',
+            }}
+          >
             {allSymbols.map((symbol) => {
               const isHash = symbol === '#';
               const link = isHash ? '/browse/non-cyrillic' : `/browse/${symbol.toLowerCase()}`;
@@ -70,7 +77,15 @@ export default function FullMenu({ onClose }: FullMenuProps) {
                   to={link}
                   onClick={handleLinkClick}
                   className="alphabet-button"
-                  style={{ textAlign: 'center', padding: '8px 0', backgroundColor: '#1e242c', border: '1px solid #2a2f3a', textDecoration: 'none', color: '#ffffff', gridColumn: isHash ? 'span 2' : 'auto' }}
+                  style={{
+                    textAlign: 'center',
+                    padding: '8px 0',
+                    backgroundColor: '#373e4a',
+                    border: '1px solid #2a2f3a',
+                    textDecoration: 'none',
+                    color: '#ffffff',
+                    gridColumn: isHash ? 'span 2' : 'auto',
+                  }}
                 >
                   {symbol}
                 </Link>

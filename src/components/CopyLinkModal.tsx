@@ -1,14 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface CopyLinkModalProps {
   word: string;
-  definitionId: number;
   onClose: () => void;
 }
 
-export default function CopyLinkModal({ word, definitionId, onClose }: CopyLinkModalProps) {
-  const url = `${window.location.origin}/definition/${definitionId}`;
+export default function CopyLinkModal({ word, onClose }: CopyLinkModalProps) {
+  const url = `${window.location.origin}/search?word=${encodeURIComponent(word)}`;
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   const copyToClipboard = async () => {
     try {
@@ -38,19 +45,18 @@ export default function CopyLinkModal({ word, definitionId, onClose }: CopyLinkM
     >
       <div
         style={{
-          backgroundColor: '#212936',
-          color: '#ffffff',
+          backgroundColor: 'var(--bg-card)',
+          color: 'var(--text-color)',
           padding: '20px',
-          borderRadius: '8px',
+          borderRadius: '16px',
           maxWidth: '450px',
           width: '90%',
-          border: '1px solid #2a2f3a',
+          border: '1px solid var(--border-color)',
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Заголовок с крестиком */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h3 style={{ margin: 0, fontSize: '1.2rem' }}>Поделиться "{word}"</h3>
+          <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--text-color)' }}>Поделиться "{word}"</h3>
           <button
             onClick={onClose}
             style={{
@@ -58,25 +64,27 @@ export default function CopyLinkModal({ word, definitionId, onClose }: CopyLinkM
               border: 'none',
               fontSize: '24px',
               cursor: 'pointer',
-              color: '#ffffff',
+              color: '#6B7280',
               lineHeight: 1,
               padding: 0,
+              transition: 'color 0.2s',
             }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#ffffff')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#6B7280')}
             aria-label="Закрыть"
           >
             ✕
           </button>
         </div>
 
-        {/* Таблетка: поле + кнопка */}
         <div
           style={{
             display: 'flex',
             alignItems: 'stretch',
             borderRadius: '40px',
-            border: '1px solid #2a2f3a',
+            border: '1px solid var(--border-color)',
             overflow: 'hidden',
-            backgroundColor: '#1e242c',
+            backgroundColor: 'var(--vote-bg)',
           }}
         >
           <input
@@ -89,7 +97,7 @@ export default function CopyLinkModal({ word, definitionId, onClose }: CopyLinkM
               backgroundColor: 'transparent',
               border: 'none',
               outline: 'none',
-              color: '#e0e0e0',
+              color: 'var(--text-color)',
               fontSize: '0.9rem',
             }}
           />

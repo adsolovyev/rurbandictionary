@@ -54,41 +54,41 @@ export default function AdminDashboard() {
     return <Navigate to="/" replace />;
   }
 
-  if (loading) return <div style={{ color: '#fff' }}>Загрузка...</div>;
+  if (loading) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
 
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}>
-      <h1>Панель администратора</h1>
+      <h1 style={{ color: 'var(--text-color)' }}>Панель администратора</h1>
       <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
         {/* Левая колонка – модерация определений */}
         <div style={{ flex: 1, minWidth: '300px' }}>
-          <div style={{ background: '#2a2f3a', borderRadius: '8px', padding: '16px', marginBottom: '20px' }}>
-            <Link to="/admin/pending" style={{ textDecoration: 'none', color: '#fff' }}>
-              <h2>Модерация определений</h2>
+          <div style={{ background: 'var(--bg-card)', borderRadius: '8px', padding: '16px', marginBottom: '20px', border: '1px solid var(--border-color)' }}>
+            <Link to="/admin/pending" style={{ textDecoration: 'none', color: 'var(--text-color)' }}>
+              <h2 style={{ color: 'var(--text-color)' }}>Модерация определений</h2>
             </Link>
-            <p>Ожидают: {stats.pendingDefinitions}</p>
+            <p style={{ color: 'var(--text-color)' }}>Ожидают: {stats.pendingDefinitions}</p>
           </div>
           {recentPending.length > 0 && (
-            <div style={{ background: '#1e242c', borderRadius: '8px', padding: '16px' }}>
-              <h3>Последние новые определения</h3>
-              <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', tableLayout: 'fixed' }}>
+            <div style={{ background: 'var(--vote-bg)', borderRadius: '8px', padding: '16px' }}>
+              <h3 style={{ color: 'var(--text-color)' }}>Последние новые определения</h3>
+              <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--text-color)', tableLayout: 'fixed' }}>
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left', padding: '8px', width: '40%' }}>Слово</th>
-                    <th style={{ textAlign: 'left', padding: '8px', width: '30%' }}>Автор</th>
-                    <th style={{ textAlign: 'left', padding: '8px', width: '30%' }}>Дата</th>
+                    <th style={{ textAlign: 'left', padding: '8px', width: '40%', color: 'var(--text-color)' }}>Слово</th>
+                    <th style={{ textAlign: 'left', padding: '8px', width: '30%', color: 'var(--text-color)' }}>Автор</th>
+                    <th style={{ textAlign: 'left', padding: '8px', width: '30%', color: 'var(--text-color)' }}>Дата</th>
                   </tr>
                 </thead>
                 <tbody>
                   {recentPending.map(item => (
                     <tr key={item.id}>
                       <td style={{ padding: '8px', wordBreak: 'break-word' }}>
-                        <Link to={`/admin/pending?id=${item.id}`} style={{ color: '#4dafff' }}>
+                        <Link to={`/admin/pending?id=${item.id}`} style={{ color: 'var(--link-color)' }}>
                           {item.word}
                         </Link>
                       </td>
-                      <td style={{ padding: '8px', wordBreak: 'break-word' }}>{item.author}</td>
-                      <td style={{ padding: '8px', wordBreak: 'break-word' }}>{new Date(item.created_at).toLocaleDateString()}</td>
+                      <td style={{ padding: '8px', wordBreak: 'break-word', color: 'var(--text-color)' }}>{item.author}</td>
+                      <td style={{ padding: '8px', wordBreak: 'break-word', color: 'var(--text-color)' }}>{new Date(item.created_at).toLocaleDateString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -99,33 +99,33 @@ export default function AdminDashboard() {
 
         {/* Средняя колонка – жалобы */}
         <div style={{ flex: 1, minWidth: '300px' }}>
-          <div style={{ background: '#2a2f3a', borderRadius: '8px', padding: '16px', marginBottom: '20px' }}>
-            <Link to="/admin/reports" style={{ textDecoration: 'none', color: '#fff' }}>
-              <h2>Жалобы</h2>
+          <div style={{ background: 'var(--bg-card)', borderRadius: '8px', padding: '16px', marginBottom: '20px', border: '1px solid var(--border-color)' }}>
+            <Link to="/admin/reports" style={{ textDecoration: 'none', color: 'var(--text-color)' }}>
+              <h2 style={{ color: 'var(--text-color)' }}>Жалобы</h2>
             </Link>
-            <p>Ожидают: {stats.pendingReports}</p>
+            <p style={{ color: 'var(--text-color)' }}>Ожидают: {stats.pendingReports}</p>
           </div>
           {recentReports.length > 0 && (
-            <div style={{ background: '#1e242c', borderRadius: '8px', padding: '16px' }}>
-              <h3>Последние жалобы</h3>
-              <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', tableLayout: 'fixed' }}>
+            <div style={{ background: 'var(--vote-bg)', borderRadius: '8px', padding: '16px' }}>
+              <h3 style={{ color: 'var(--text-color)' }}>Последние жалобы</h3>
+              <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--text-color)', tableLayout: 'fixed' }}>
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left', padding: '8px', width: '40%' }}>Слово</th>
-                    <th style={{ textAlign: 'left', padding: '8px', width: '30%' }}>Причина</th>
-                    <th style={{ textAlign: 'left', padding: '8px', width: '30%' }}>Дата</th>
+                    <th style={{ textAlign: 'left', padding: '8px', width: '40%', color: 'var(--text-color)' }}>Слово</th>
+                    <th style={{ textAlign: 'left', padding: '8px', width: '30%', color: 'var(--text-color)' }}>Причина</th>
+                    <th style={{ textAlign: 'left', padding: '8px', width: '30%', color: 'var(--text-color)' }}>Дата</th>
                   </tr>
                 </thead>
                 <tbody>
                   {recentReports.map(item => (
                     <tr key={item.id}>
                       <td style={{ padding: '8px', wordBreak: 'break-word' }}>
-                        <Link to={`/admin/reports?id=${item.id}`} style={{ color: '#4dafff' }}>
+                        <Link to={`/admin/reports?id=${item.id}`} style={{ color: 'var(--link-color)' }}>
                           {item.definition_word}
                         </Link>
                       </td>
-                      <td style={{ padding: '8px', wordBreak: 'break-word' }}>{item.reason}</td>
-                      <td style={{ padding: '8px', wordBreak: 'break-word' }}>{new Date(item.created_at).toLocaleDateString()}</td>
+                      <td style={{ padding: '8px', wordBreak: 'break-word', color: 'var(--text-color)' }}>{item.reason}</td>
+                      <td style={{ padding: '8px', wordBreak: 'break-word', color: 'var(--text-color)' }}>{new Date(item.created_at).toLocaleDateString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -134,15 +134,38 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* Правая колонка – управление пользователями */}
-        <div style={{ flex: 1, minWidth: '300px' }}>
-          <div style={{ background: '#2a2f3a', borderRadius: '8px', padding: '16px', marginBottom: '20px' }}>
-            <Link to="/admin/users" style={{ textDecoration: 'none', color: '#fff' }}>
-              <h2>Пользователи</h2>
-            </Link>
-            <p>Смена пароля пользователя</p>
-          </div>
-        </div>
+{/* Правая колонка – управление пользователями */}
+<div style={{ flex: 1, minWidth: '300px' }}>
+  <div style={{ background: 'var(--bg-card)', borderRadius: '8px', padding: '16px', marginBottom: '20px', border: '1px solid var(--border-color)' }}>
+    <Link to="/admin/users" style={{ textDecoration: 'none', color: 'var(--text-color)' }}>
+      <h2 style={{ color: 'var(--text-color)' }}>Пользователи</h2>
+    </Link>
+    <p style={{ color: 'var(--text-color)' }}>Смена пароля пользователя</p>
+  </div>
+
+  <div style={{
+    backgroundColor: 'var(--contrast-bg)',
+    borderRadius: '8px',
+    padding: '16px',
+    textAlign: 'center',
+    marginTop: '20px',
+    border: '1px solid var(--border-color)',
+  }}>
+    <img
+      src="images/i.svg"
+      alt="Котик"
+      style={{
+        maxWidth: '140px',
+        width: '100%',
+        height: 'auto',
+        display: 'block',
+        margin: '0 auto',
+      }}
+    />
+  </div>
+</div>
+
+        
       </div>
     </div>
   );

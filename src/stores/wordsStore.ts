@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 
 interface WordsState {
-  words: string[];
+  words: string[];      // массив уникальных слов (активных)
   loading: boolean;
-  fetchWords: () => Promise<void>;
+  fetchWords: () => Promise<void>; // загружает слова с бэкенда (GET /api/words/active)
 }
 
 export const useWordsStore = create<WordsState>((set) => ({

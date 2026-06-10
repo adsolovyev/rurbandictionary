@@ -24,63 +24,104 @@ export default function Register() {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto', padding: '1rem' }}>
-      <h2>Создание учетной записи</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Имя пользователя</label><br />
-          <input
-            type="text"
-            value={login}
-            onChange={(e) => setLogin(e.target.value)}
-            required
-            style={{ width: '100%', padding: '8px', marginBottom: '8px' }}
-          />
-        </div>
-        <div>
-          <label>Почта</label><br />
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ width: '100%', padding: '8px', marginBottom: '8px' }}
-          />
-        </div>
-        <div>
-          <label>Пароль</label><br />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ width: '100%', padding: '8px', marginBottom: '16px' }}
-          />
-        </div>
-        {error && <div style={{ color: 'red', marginBottom: '16px' }}>{error}</div>}
-        <button
-          type="submit"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '12px',
-            width: '100%',
-            padding: '8px 16px',
-            background: '#1e242c',
-            color: '#fff',
-            border: '1px solid #2a2f3a',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '1rem',
-          }}
-        >
-          Зарегистрироваться
-        </button>
-      </form>
-      <p style={{ marginTop: '16px' }}>
-        Уже есть учетная запись? <a href="/login">Войти</a>
-      </p>
+    <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
+      <div
+        style={{
+          backgroundColor: 'var(--bg-card)',
+          borderRadius: '16px',
+          padding: '24px',
+          border: '1px solid var(--border-color)',
+        }}
+      >
+        <h2 style={{ color: 'var(--text-color)', textAlign: 'center', marginBottom: '48px', marginTop: '48px' }}>
+          Создание учётной записи
+        </h2>
+
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ color: 'var(--text-color)', display: 'block', marginBottom: '8px' }}>Имя пользователя</label>
+            <input
+              type="text"
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+              required
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: 'var(--vote-bg)',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-color)',
+                borderRadius: '8px',
+                fontSize: '1rem',
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ color: 'var(--text-color)', display: 'block', marginBottom: '8px' }}>Почта</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: 'var(--vote-bg)',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-color)',
+                borderRadius: '8px',
+                fontSize: '1rem',
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ color: 'var(--text-color)', display: 'block', marginBottom: '8px' }}>Пароль</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: 'var(--vote-bg)',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-color)',
+                borderRadius: '8px',
+                fontSize: '1rem',
+              }}
+            />
+          </div>
+          {error && <div style={{ color: '#f44336', marginBottom: '16px', fontSize: '0.9rem' }}>{error}</div>}
+          <button
+            type="submit"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              width: '100%',
+              padding: '10px 16px',
+              background: 'var(--link-color)',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '40px',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              transition: 'background-color 0.2s',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3a8fcc')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--link-color)')}
+          >
+            Зарегистрироваться
+          </button>
+        </form>
+
+        <p style={{ marginTop: '20px', textAlign: 'center', color: 'var(--text-color)' }}>
+          Уже есть учётная запись? <a href="/login" style={{ color: 'var(--link-color)' }}>Войти</a>
+        </p>
+      </div>
     </div>
   );
 }

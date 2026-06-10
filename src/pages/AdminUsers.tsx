@@ -90,7 +90,7 @@ export default function AdminUsers() {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-      <h1 style={{ color: '#fff' }}>Сброс пароля пользователя</h1>
+      <h1 style={{ color: 'var(--text-color)' }}>Сброс пароля пользователя</h1>
       {message && <div style={{ padding: '8px', marginBottom: '16px', background: '#4caf50', color: '#fff', borderRadius: '4px' }}>{message}</div>}
       <div style={{ marginBottom: '20px' }}>
         <input
@@ -101,21 +101,21 @@ export default function AdminUsers() {
           style={{
             width: '100%',
             padding: '8px',
-            backgroundColor: '#1e242c',
-            border: '1px solid #2a2f3a',
-            color: '#fff',
+            backgroundColor: 'var(--vote-bg)',
+            border: '1px solid var(--border-color)',
+            color: 'var(--text-color)',
             borderRadius: '4px',
           }}
         />
       </div>
-      {loading && <div style={{ color: '#fff' }}>Поиск...</div>}
+      {loading && <div style={{ color: 'var(--text-color)' }}>Поиск...</div>}
       {showResults && (
-        <div style={{ background: '#2a2f3a', borderRadius: '8px', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
           {users.map(u => (
-            <div key={u.id} style={{ padding: '12px', borderBottom: '1px solid #3a3f4a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+            <div key={u.id} style={{ padding: '12px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
               <div>
-                <strong style={{ color: '#fff' }}>{u.login}</strong><br />
-                <span style={{ color: '#aaa', fontSize: '0.8rem' }}>{u.email}</span>
+                <strong style={{ color: 'var(--text-color)' }}>{u.login}</strong><br />
+                <span style={{ color: 'var(--blockquote-color)', fontSize: '0.8rem' }}>{u.email}</span>
               </div>
               <div>
                 {resetUserId === u.id ? (
@@ -127,18 +127,18 @@ export default function AdminUsers() {
                       onChange={(e) => setNewPassword(e.target.value)}
                       style={{ padding: '4px', borderRadius: '4px', border: 'none' }}
                     />
-                    <button onClick={() => handleReset(u.id)} style={{ background: '#4caf50', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}>Сохранить</button>
-                    <button onClick={() => { setResetUserId(null); setNewPassword(''); }} style={{ background: '#f44336', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}>Отмена</button>
+                    <button onClick={() => handleReset(u.id)} style={{ background: '#4caf50', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', color: '#fff' }}>Сохранить</button>
+                    <button onClick={() => { setResetUserId(null); setNewPassword(''); }} style={{ background: '#f44336', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', color: '#fff' }}>Отмена</button>
                   </div>
                 ) : (
-                  <button onClick={() => setResetUserId(u.id)} style={{ background: '#ff9800', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}>Изменить пароль</button>
+                  <button onClick={() => setResetUserId(u.id)} style={{ background: '#ff9800', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', color: '#fff' }}>Изменить пароль</button>
                 )}
               </div>
             </div>
           ))}
         </div>
       )}
-      {showNoResults && <div style={{ color: '#aaa', marginTop: '10px' }}>Пользователь не найден.</div>}
+      {showNoResults && <div style={{ color: 'var(--blockquote-color)', marginTop: '10px' }}>Пользователь не найден.</div>}
     </div>
   );
 }

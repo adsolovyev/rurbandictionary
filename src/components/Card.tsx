@@ -279,7 +279,7 @@ export default function Card({
           </div>
         </div>
       </div>
-      {showModal && <CopyLinkModal word={word} definitionId={id} onClose={() => setShowModal(false)} />}
+      {showModal && <CopyLinkModal word={word} onClose={() => setShowModal(false)} />}
     </>
   );
 }

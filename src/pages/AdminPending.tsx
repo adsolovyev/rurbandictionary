@@ -16,7 +16,6 @@ export default function AdminPending() {
   const [similarDefs, setSimilarDefs] = useState<Record<number, Definition[]>>({});
   const [loadingSimilar, setLoadingSimilar] = useState<Record<number, boolean>>({});
   
-  // Определяем текущий индекс из URL ?index= или ?id=
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentDef = definitions[currentIndex];
 
@@ -32,7 +31,6 @@ export default function AdminPending() {
         const data = await getPendingDefinitions();
         if (mounted) {
           setDefinitions(data);
-          // Определяем начальный индекс
           const params = new URLSearchParams(location.search);
           const idParam = params.get('id');
           if (idParam) {
@@ -54,7 +52,6 @@ export default function AdminPending() {
     return () => { mounted = false; };
   }, [user, navigate, location.search]);
 
-  // Обновляем URL при смене индекса (без перезагрузки)
   useEffect(() => {
     if (definitions.length === 0) return;
     const params = new URLSearchParams(location.search);
@@ -65,16 +62,10 @@ export default function AdminPending() {
   const handleApprove = async (id: number) => {
     try {
       await approveDefinition(id);
-      // Удаляем одобренное из списка
       const newList = definitions.filter(def => def.id !== id);
       setDefinitions(newList);
-      if (newList.length === 0) {
-        // Нет больше заявок
-        setCurrentIndex(0);
-      } else if (currentIndex >= newList.length) {
-        // Если удалили последний, переходим на предыдущий
-        setCurrentIndex(newList.length - 1);
-      }
+      if (newList.length === 0) setCurrentIndex(0);
+      else if (currentIndex >= newList.length) setCurrentIndex(newList.length - 1);
       setMessage({ text: `Определение #${id} одобрено`, type: 'success' });
       setTimeout(() => setMessage(null), 3000);
     } catch {
@@ -94,11 +85,8 @@ export default function AdminPending() {
       await rejectDefinition(id, reason);
       const newList = definitions.filter(def => def.id !== id);
       setDefinitions(newList);
-      if (newList.length === 0) {
-        setCurrentIndex(0);
-      } else if (currentIndex >= newList.length) {
-        setCurrentIndex(newList.length - 1);
-      }
+      if (newList.length === 0) setCurrentIndex(0);
+      else if (currentIndex >= newList.length) setCurrentIndex(newList.length - 1);
       setMessage({ text: `Определение #${id} отклонено`, type: 'success' });
       setTimeout(() => setMessage(null), 3000);
     } catch {
@@ -131,9 +119,9 @@ export default function AdminPending() {
     if (currentIndex < definitions.length - 1) setCurrentIndex(currentIndex + 1);
   };
 
-  if (loading) return <div style={{ color: '#fff' }}>Загрузка...</div>;
+  if (loading) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
   if (!currentDef && definitions.length === 0) {
-    return <div style={{ color: '#fff', padding: '20px' }}>Нет определений на модерации.</div>;
+    return <div style={{ color: 'var(--text-color)', padding: '20px' }}>Нет определений на модерации.</div>;
   }
   if (!currentDef) return null;
 
@@ -143,10 +131,10 @@ export default function AdminPending() {
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 style={{ color: '#fff' }}>Модерация определений</h1>
+        <h1 style={{ color: 'var(--text-color)' }}>Модерация определений</h1>
         <div>
           <button onClick={goPrev} disabled={currentIndex === 0} style={{ marginRight: '8px', ...buttonStyle }}>←</button>
-          <span style={{ color: '#fff' }}>{currentNumber} / {total}</span>
+          <span style={{ color: 'var(--text-color)' }}>{currentNumber} / {total}</span>
           <button onClick={goNext} disabled={currentIndex === total - 1} style={{ marginLeft: '8px', ...buttonStyle }}>→</button>
         </div>
       </div>
@@ -161,7 +149,7 @@ export default function AdminPending() {
             <button onClick={() => handleApprove(currentDef.id)} style={approveButtonStyle}>Одобрить</button>
             <button onClick={() => handleReject(currentDef.id)} style={rejectButtonStyle}>Отклонить</button>
             <button onClick={() => alert('Функция связи с пользователем в разработке')} style={contactButtonStyle}>
-            Связаться с автором (WIP)
+              Связаться с автором (WIP)
             </button>
           </>
         }
@@ -182,8 +170,8 @@ export default function AdminPending() {
           {loadingSimilar[currentDef.id] ? 'Загрузка...' : 'Показать другие определения этого слова'}
         </button>
         {similarDefs[currentDef.id] && similarDefs[currentDef.id].length > 0 && (
-          <div style={{ marginTop: '16px', borderTop: '1px solid #444', paddingTop: '12px' }}>
-            <h4 style={{ margin: '0 0 12px 0', color: '#fff' }}>Другие определения слова «{currentDef.word}»:</h4>
+          <div style={{ marginTop: '16px', borderTop: '1px solid var(--border-color)', paddingTop: '12px' }}>
+            <h4 style={{ margin: '0 0 12px 0', color: 'var(--text-color)' }}>Другие определения слова «{currentDef.word}»:</h4>
             {similarDefs[currentDef.id].map(sim => (
               <CardSimple
                 key={sim.id}
@@ -195,21 +183,20 @@ export default function AdminPending() {
           </div>
         )}
         {similarDefs[currentDef.id] && similarDefs[currentDef.id].length === 0 && (
-          <div style={{ marginTop: '12px', color: '#aaa' }}>Нет других определений.</div>
+          <div style={{ marginTop: '12px', color: 'var(--blockquote-color)' }}>Нет других определений.</div>
         )}
       </div>
     </div>
   );
 }
 
-// Стили (вынесены для читаемости)
 const buttonStyle = {
-  background: '#2a2f3a',
-  border: 'none',
+  background: 'var(--vote-bg)',
+  border: '1px solid var(--border-color)',
   padding: '6px 12px',
   borderRadius: '4px',
   cursor: 'pointer',
-  color: '#fff',
+  color: 'var(--text-color)',
 } as const;
 
 const approveButtonStyle = {
@@ -240,20 +227,22 @@ const contactButtonStyle = {
 } as const;
 
 const linkButtonStyle = {
-  background: 'none',
-  border: '1px solid #4dafff',
-  padding: '4px 8px',
+  background: 'var(--link-color)',
+  border: 'none',
+  padding: '6px 12px',
   borderRadius: '4px',
   cursor: 'pointer',
-  color: '#4dafff',
+  color: '#fff',
+  fontWeight: 'bold',
+  transition: 'background-color 0.2s',
 } as const;
 
 const inputStyle = {
   width: '100%',
   padding: '8px',
-  backgroundColor: '#1e242c',
-  border: '1px solid #2a2f3a',
-  color: '#fff',
+  backgroundColor: 'var(--vote-bg)',
+  border: '1px solid var(--border-color)',
+  color: 'var(--text-color)',
   borderRadius: '4px',
 } as const;
 

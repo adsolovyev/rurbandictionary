@@ -1,8 +1,12 @@
-body.dyslexic,
-body.dyslexic *,
-body.dyslexic *::before,
-body.dyslexic *::after {
-  font-family: 'OpenDyslexic', sans-serif !important;
+/* ========================================= */
+/* 1. Шрифты и общие сбросы                  */
+/* ========================================= */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 * {
@@ -11,11 +15,49 @@ body.dyslexic *::after {
   box-sizing: border-box;
 }
 
+/* ========================================= */
+/* 2. Переменные темы (тёмная по умолчанию)   */
+/* ========================================= */
+:root {
+  --text-color: #ffffff;
+  --blockquote-color: #cccccc;
+  --bg-card: #212936;
+  --border-color: #2a2f3a;
+  --vote-bg: #1e242c;
+  --vote-border: #2a2f3a;
+  --link-color: #4dafff;
+  --contrast-bg: #ffffff;               /* для котика и подобных вставок */
+  --alphabet-grid-bg: #2a2f3a;
+  --alphabet-tile-bg: #373e4a;
+}
+
+/* Светлая тема (переопределяем переменные) */
+.light-theme {
+  --text-color: #000000;
+  --blockquote-color: #555;
+  --bg-card: #ffffff;
+  --border-color: #e0e0e0;
+  --vote-bg: #f3f4f6;
+  --vote-border: #e5e7eb;
+  --link-color: #0066cc;
+  --contrast-bg: #f0f0f0;
+  --alphabet-grid-bg: #e5e7eb;
+  --alphabet-tile-bg: #ffffff;
+}
+
+/* ========================================= */
+/* 3. Базовые стили                          */
+/* ========================================= */
 body {
-  background-color: #161a20;
-  color: #ffffff;
+  background-color: #161a20;   /* фон по умолчанию (тёмный) */
+  color: var(--text-color);
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.5;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+body.light-theme {
+  background-color: #eae7e1;   /* фон для светлой темы */
 }
 
 .container {
@@ -35,7 +77,9 @@ main {
   padding-top: 32px;
 }
 
-/* Кнопка перемешивания */
+/* ========================================= */
+/* 4. Классы для динамических элементов      */
+/* ========================================= */
 .reshuffle-button {
   background: none;
   border: none;
@@ -47,99 +91,14 @@ main {
   font-size: 1rem;
   transition: color 0.2s ease;
 }
-
 .reshuffle-button:hover {
   color: #ffffff;
 }
-
 .reshuffle-icon {
   transition: transform 0.3s ease;
 }
-
 .reshuffle-button:hover .reshuffle-icon {
   transform: rotate(180deg);
-}
-
-.random-button {
-  transition: color 0.2s ease;
-}
-.random-button:hover {
-  color: #ffffff;
-}
-.random-icon {
-  transition: transform 0.3s ease;
-}
-.random-button:hover .random-icon {
-  transform: rotate(180deg);
-}
-
-@font-face {
-  font-family: 'OpenDyslexic';
-  src: url('/fonts/OpenDyslexic-Regular.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-body.dyslexic {
-  font-family: 'OpenDyslexic', sans-serif;
-}
-
-a, .clickable-link {
-  color: #4dafff;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-a:hover, .clickable-link:hover {
-  color: #ffffff;
-  text-decoration: underline;
-}
-
-.alphabet-button {
-  transition: background-color 0.2s ease;
-}
-.alphabet-button:hover {
-  background-color: #1979e6 !important;
-}
-
-.vote-up:hover {
-  background-color: rgb(21, 128, 61) !important;
-}
-.vote-down:hover {
-  background-color: rgb(185, 28, 28) !important;
-}
-
-/* Светлая тема */
-.light-theme {
-  --text-color: #000000;
-  --blockquote-color: #555;
-  --bg-card: #ffffff;
-  --border-color: #ddd;
-  --vote-bg: #f0f0f0;
-  --vote-border: #ccc;
-  --link-color: #0066cc;
-}
-
-/* По умолчанию (тёмная тема) используем существующие цвета как переменные */
-:root {
-  --text-color: #ffffff;
-  --blockquote-color: #cccccc;
-  --bg-card: #212936;
-  --border-color: #2a2f3a;
-  --vote-bg: #1e242c;
-  --vote-border: #2a2f3a;
-  --link-color: #4dafff;
-}
-
-/* Применяем переменные к body и контейнерам */
-body {
-  background-color: #161a20; /* тёмный фон */
-  color: var(--text-color);
-  transition: background-color 0.2s, color 0.2s;
-}
-
-body.light-theme {
-  background-color: #eae7e1;
 }
 
 .random-button {
@@ -150,40 +109,48 @@ body.light-theme {
   color: #ffffff;          /* белый при наведении */
 }
 .random-button:hover .random-icon {
-  transform: rotate(180deg); /* поворот иконки при наведении */
+  transform: rotate(180deg);
 }
 .random-icon {
   transition: transform 0.3s ease;
 }
 
-/* Тёмная тема (по умолчанию) */
-:root {
-  --text-color: #ffffff;
-  --blockquote-color: #cccccc;
-  --bg-card: #212936;
-  --border-color: #2a2f3a;
-  --vote-bg: #1e242c;
-  --vote-border: #2a2f3a;
-  --link-color: #4dafff;
+/* Шрифт для дислексии */
+body.dyslexic,
+body.dyslexic *,
+body.dyslexic *::before,
+body.dyslexic *::after {
+  font-family: 'OpenDyslexic', sans-serif !important;
 }
 
-/* Светлая тема */
-.light-theme {
-  --text-color: #000000;
-  --blockquote-color: #555;
-  --bg-card: #ffffff;
-  --border-color: #e0e0e0;
-  --vote-bg: #f3f4f6;
-  --vote-border: #e5e7eb;
-  --link-color: #0066cc;
+/* Ссылки и кликабельные элементы */
+a, .clickable-link {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover, .clickable-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+/* В светлой теме при наведении чёрный, чтобы контраст был хорошим */
+.light-theme a:hover,
+.light-theme .clickable-link:hover {
+  color: #000000;
 }
 
-/* Фон страницы */
-body {
-  background-color: #161a20;
-  transition: background-color 0.2s, color 0.2s;
+/* Кнопки алфавита */
+.alphabet-button {
+  transition: background-color 0.2s ease;
+}
+.alphabet-button:hover {
+  background-color: #1979e6 !important;
 }
 
-body.light-theme {
-  background-color: #eae7e1;
+/* Кнопки голосования */
+.vote-up:hover {
+  background-color: rgb(21, 128, 61) !important;
+}
+.vote-down:hover {
+  background-color: rgb(185, 28, 28) !important;
 }

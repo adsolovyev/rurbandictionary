@@ -55,35 +55,74 @@ export default function AlphabetBrowse() {
     }
   };
 
-  if (loading) return <div style={{ color: '#fff' }}>Загрузка...</div>;
+  if (loading) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
 
   return (
     <div>
-      <h2 style={{ color: '#fff' }}>Слова на букву {character?.toUpperCase()}</h2>
+      <h2 style={{ color: 'var(--text-color)', marginBottom: '24px' }}>
+        Слова на букву {character?.toUpperCase()}
+      </h2>
+
       {words.length === 0 ? (
-        <p style={{ color: '#fff' }}>Нет слов на эту букву.</p>
+        <p style={{ color: 'var(--text-color)' }}>Нет слов на эту букву.</p>
       ) : (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '20px' }}>
-            {words.map(word => (
-              <Link key={word} to={`/search?word=${encodeURIComponent(word)}`} style={{ color: '#4dafff' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: 0,
+              backgroundColor: 'var(--alphabet-grid-bg)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              marginBottom: '32px',
+            }}
+          >
+            {words.map((word) => (
+              <Link
+                key={word}
+                to={`/search?word=${encodeURIComponent(word)}`}
+                style={{
+                  textAlign: 'center',
+                  padding: '12px 8px',
+                  backgroundColor: 'var(--alphabet-tile-bg)',
+                  border: '1px solid var(--border-color)',
+                  textDecoration: 'none',
+                  color: 'var(--text-color)',
+                  transition: 'background-color 0.2s, color 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--link-color)';
+                  e.currentTarget.style.color = '#ffffff';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--alphabet-tile-bg)';
+                  e.currentTarget.style.color = 'var(--text-color)';
+                }}
+              >
                 {word}
               </Link>
             ))}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '16px', flexWrap: 'wrap' }}>
-            <button onClick={() => goToPage(1)} disabled={currentPage === 1} style={pageButtonStyle}>
-              ≪
-            </button>
-            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} style={pageButtonStyle}>
-              ←
-            </button>
+
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '8px',
+              marginTop: '16px',
+              flexWrap: 'wrap',
+            }}
+          >
+            <button onClick={() => goToPage(1)} disabled={currentPage === 1} style={pageButtonStyle}>≪</button>
+            <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} style={pageButtonStyle}>←</button>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              <span style={{ color: '#fff' }}>Страница</span>
+              <span style={{ color: 'var(--text-color)' }}>Страница</span>
               <input
                 type="text"
                 inputMode="numeric"
-                pattern="[0-9]*"
                 value={inputPage}
                 onChange={(e) => setInputPage(e.target.value.replace(/[^0-9]/g, ''))}
                 onKeyDown={handlePageInputSubmit}
@@ -91,20 +130,16 @@ export default function AlphabetBrowse() {
                   width: '60px',
                   padding: '4px',
                   textAlign: 'center',
-                  background: '#1e242c',
-                  color: '#fff',
-                  border: '1px solid #2a2f3a',
+                  background: 'var(--vote-bg)',
+                  color: 'var(--text-color)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '4px',
                 }}
               />
-              <span style={{ color: '#fff' }}>из {totalPages}</span>
+              <span style={{ color: 'var(--text-color)' }}>из {totalPages}</span>
             </div>
-            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} style={pageButtonStyle}>
-              →
-            </button>
-            <button onClick={() => goToPage(totalPages)} disabled={currentPage === totalPages} style={pageButtonStyle}>
-              ≫
-            </button>
+            <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} style={pageButtonStyle}>→</button>
+            <button onClick={() => goToPage(totalPages)} disabled={currentPage === totalPages} style={pageButtonStyle}>≫</button>
           </div>
         </>
       )}
@@ -114,9 +149,9 @@ export default function AlphabetBrowse() {
 
 const pageButtonStyle = {
   padding: '4px 12px',
-  background: '#2a2f3a',
-  border: 'none',
+  background: 'var(--vote-bg)',
+  border: '1px solid var(--border-color)',
   borderRadius: '4px',
   cursor: 'pointer',
-  color: '#fff',
+  color: 'var(--text-color)',
 } as const;

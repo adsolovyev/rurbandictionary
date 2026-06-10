@@ -9,14 +9,11 @@ import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectRoute';
 import Home from './pages/Home';
 import SearchResults from './pages/SearchResults';
-import DefinitionPage from './pages/DefinitionPage';
 import AddDefinition from './pages/AddDefinition';
 import ReportForm from './pages/ReportForm';
 import AlphabetBrowse from './pages/AlphabetBrowse';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import ResetPasswordRequest from './pages/ResetPasswordRequest';
-import ResetPassword from './pages/ResetPassword';
 import AdminReports from './pages/AdminReports';
 import AdminPending from './pages/AdminPending';
 import AdminDashboard from './pages/AdminDashboard';
@@ -61,14 +58,11 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/search" element={<SearchResults />} />
-            <Route path="/definition/:id" element={<DefinitionPage />} />
             <Route path="/add" element={<AddDefinition />} />
             <Route path="/report/:definitionId" element={<ReportForm />} />
             <Route path="/browse/:character" element={<AlphabetBrowse />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/reset-password" element={<ResetPasswordRequest />} />
-            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/alphabet" element={<Alphabet />} />
             <Route path="/browse/non-cyrillic" element={<NonCyrillicBrowse />} />
             <Route path="/user/:login" element={<UserDefinitions />} />

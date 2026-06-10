@@ -278,7 +278,7 @@ export default function SearchBar() {
         height: '24px',
         borderRadius: '50%',
         transition: 'background-color 0.2s',
-        color: '#4dafff', // синий по умолчанию
+        color: '#4dafff', 
       }}
       className="suggestion-arrow"
       onMouseEnter={(e) => {
@@ -287,7 +287,7 @@ export default function SearchBar() {
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.backgroundColor = 'transparent';
-        e.currentTarget.style.color = '#4dafff'; // возвращаем синий
+        e.currentTarget.style.color = '#4dafff'; 
       }}
     >
       <svg
@@ -324,7 +324,7 @@ export default function SearchBar() {
       height: '24px',
       borderRadius: '50%',
       transition: 'background-color 0.2s',
-      color: '#4dafff', // ← изменено с серого на синий
+      color: '#4dafff', 
     }}
     onMouseEnter={(e) => {
       e.currentTarget.style.backgroundColor = '#EFFF00';

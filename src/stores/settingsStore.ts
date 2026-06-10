@@ -10,6 +10,8 @@ interface SettingsState {
 export const useSettingsStore = create<SettingsState>((set, get) => ({
   dyslexicFont: false,
   loading: true,
+
+  // Загружает настройки с сервера (шрифт для дислексии)
   fetchSettings: async () => {
     try {
       const res = await fetch('/api/user/settings', { credentials: 'include' });
@@ -25,6 +27,8 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
       set({ loading: false });
     }
   },
+
+  // Переключает шрифт для дислексии и сохраняет настройку на сервере
   toggleDyslexicFont: async () => {
     const current = get().dyslexicFont;
     const newValue = !current;

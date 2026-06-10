@@ -19,6 +19,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   loading: true,
 
+  // Загружает текущего пользователя с бэкенда (вызывается при загрузке приложения)
   fetchMe: async () => {
     set({ loading: true });
     try {
@@ -30,6 +31,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
+  // Вход в систему: отправляет логин/пароль, получает пользователя и сохраняет его
   login: async (login, password) => {
     set({ loading: true });
     const res = await fetch('/api/auth/login', {
@@ -45,6 +47,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     return user;
   },
 
+  // Регистрация нового пользователя
   register: async (login, email, password) => {
     set({ loading: true });
     const res = await fetch('/api/auth/register', {
@@ -57,6 +60,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: false });
   },
 
+  // Выход из системы: сбрасывает пользователя и очищает сессию на сервере
   logout: async () => {
     set({ loading: true });
     await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
