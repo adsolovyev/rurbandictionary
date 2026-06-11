@@ -265,3 +265,16 @@ export const getActiveWords = async (): Promise<string[]> => {
   if (!res.ok) throw new Error('Failed to fetch active words');
   return res.json();
 };
+
+export interface SuggestionData {
+  word: string;
+  definition: string;
+}
+
+export const getSuggestionsData = async (): Promise<SuggestionData[]> => {
+  const res = await fetch(`${API_BASE}/definitions/suggestions-data`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('Failed to fetch suggestions data');
+  return res.json();
+};

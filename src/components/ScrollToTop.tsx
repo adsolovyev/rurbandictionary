@@ -24,18 +24,19 @@ export default function ScrollToTop() {
       className="scroll-to-top"
       aria-label="Наверх"
       style={{
-  position: 'fixed',
-  bottom: '44px',
-  right: '44px',
-  backgroundColor: 'var(--bg-card)',
-  border: '1px solid var(--border-color)',
-  borderRadius: '50%',
-  width: '48px',
-  height: '48px',
+        position: 'fixed',
+        bottom: '44px',
+        right: '44px',
+        backgroundColor: 'var(--bg-card)',
+        border: '1px solid var(--border-color)',
+        borderRadius: '50%',
+        width: '48px',
+        height: '48px',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
         transition: 'background-color 0.2s, transform 0.2s',
         zIndex: 1000,
       }}

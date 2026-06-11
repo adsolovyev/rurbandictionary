@@ -3,10 +3,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuthStore } from './stores/authStore';
 import { useSettingsStore } from './stores/settingsStore';
 import { useThemeStore } from './stores/themeStore';
-import { useWordsStore } from './stores/wordsStore'; // <-- добавить
+import { useWordsStore } from './stores/wordsStore';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectRoute';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import SearchResults from './pages/SearchResults';
 import AddDefinition from './pages/AddDefinition';
@@ -21,15 +22,20 @@ import AdminUsers from './pages/AdminUsers';
 import Alphabet from './pages/Alphabet';
 import NonCyrillicBrowse from './pages/NonCyrillicBrowse';
 import UserDefinitions from './pages/UserDefinitions';
-import ScrollToTop from './components/ScrollToTop';
+import { useSuggestionsStore } from './stores/suggestionsStore';
 import Help from './pages/Help';
 
 function App() {
   const fetchMe = useAuthStore(state => state.fetchMe);
   const fetchSettings = useSettingsStore(state => state.fetchSettings);
-  const fetchWords = useWordsStore(state => state.fetchWords); // <-- добавить
+  const fetchWords = useWordsStore(state => state.fetchWords);
   const user = useAuthStore(state => state.user);
   const { theme } = useThemeStore();
+  const fetchSuggestionsData = useSuggestionsStore(state => state.fetchData);
+
+  useEffect(() => {
+    fetchSuggestionsData();
+  }, [fetchSuggestionsData]);
 
   useEffect(() => {
     fetchMe();
@@ -40,7 +46,7 @@ function App() {
   }, [user, fetchSettings]);
 
   useEffect(() => {
-    fetchWords(); // <-- загружаем слова для подсветки
+    fetchWords();
   }, [fetchWords]);
 
   useEffect(() => {
@@ -68,7 +74,6 @@ function App() {
             <Route path="/browse/non-cyrillic" element={<NonCyrillicBrowse />} />
             <Route path="/user/:login" element={<UserDefinitions />} />
             <Route path="/help" element={<Help />} />
-            {/* Админские маршруты */}
             <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/pending" element={<ProtectedRoute requireAdmin><AdminPending /></ProtectedRoute>} />
             <Route path="/admin/reports" element={<ProtectedRoute requireAdmin><AdminReports /></ProtectedRoute>} />

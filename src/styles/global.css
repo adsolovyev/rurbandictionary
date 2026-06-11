@@ -1,6 +1,3 @@
-/* ========================================= */
-/* 1. Шрифты и общие сбросы                  */
-/* ========================================= */
 @font-face {
   font-family: 'OpenDyslexic';
   src: url('/fonts/OpenDyslexic-Regular.otf') format('opentype');
@@ -20,6 +17,14 @@ html, body {
   overflow-x: hidden;
 }
 
+body {
+  background-color: #161a20;
+  color: var(--text-color);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  transition: background-color 0.2s, color 0.2s;
+}
+
 .container {
   max-width: 1200px;
   width: 100%;
@@ -28,68 +33,9 @@ html, body {
   box-sizing: border-box;
 }
 
-/* Для экранов меньше 640px уменьшаем padding */
 @media (max-width: 640px) {
   .container {
     padding: 0 12px;
-  }
-}
-
-/* ========================================= */
-/* 2. Переменные темы (тёмная по умолчанию)   */
-/* ========================================= */
-:root {
-  --text-color: #ffffff;
-  --blockquote-color: #cccccc;
-  --bg-card: #212936;
-  --border-color: #2a2f3a;
-  --vote-bg: #1e242c;
-  --vote-border: #2a2f3a;
-  --link-color: #4dafff;
-  --contrast-bg: #ffffff;               /* для котика и подобных вставок */
-  --alphabet-grid-bg: #2a2f3a;
-  --alphabet-tile-bg: #373e4a;
-}
-
-/* Светлая тема (переопределяем переменные) */
-.light-theme {
-  --text-color: #000000;
-  --blockquote-color: #555;
-  --bg-card: #ffffff;
-  --border-color: #e0e0e0;
-  --vote-bg: #f3f4f6;
-  --vote-border: #e5e7eb;
-  --link-color: #0066cc;
-  --contrast-bg: #f0f0f0;
-  --alphabet-grid-bg: #e5e7eb;
-  --alphabet-tile-bg: #ffffff;
-}
-
-/* ========================================= */
-/* 3. Базовые стили                          */
-/* ========================================= */
-body {
-  background-color: #161a20;   /* фон по умолчанию (тёмный) */
-  color: var(--text-color);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.5;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-body.light-theme {
-  background-color: #eae7e1;   /* фон для светлой темы */
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-  .container {
-    padding: 0 16px;
   }
 }
 
@@ -97,9 +43,6 @@ main {
   padding-top: 32px;
 }
 
-/* ========================================= */
-/* 4. Классы для динамических элементов      */
-/* ========================================= */
 .reshuffle-button {
   background: none;
   border: none;
@@ -122,11 +65,11 @@ main {
 }
 
 .random-button {
-  color: #a0a0a0;          /* начальный серый цвет */
+  color: #a0a0a0;
   transition: color 0.2s ease;
 }
 .random-button:hover {
-  color: #ffffff;          /* белый при наведении */
+  color: #ffffff;
 }
 .random-button:hover .random-icon {
   transform: rotate(180deg);
@@ -135,7 +78,6 @@ main {
   transition: transform 0.3s ease;
 }
 
-/* Шрифт для дислексии */
 body.dyslexic,
 body.dyslexic *,
 body.dyslexic *::before,
@@ -143,7 +85,6 @@ body.dyslexic *::after {
   font-family: 'OpenDyslexic', sans-serif !important;
 }
 
-/* Ссылки и кликабельные элементы */
 a, .clickable-link {
   color: var(--link-color);
   text-decoration: none;
@@ -153,13 +94,11 @@ a:hover, .clickable-link:hover {
   color: #ffffff;
   text-decoration: underline;
 }
-/* В светлой теме при наведении чёрный, чтобы контраст был хорошим */
 .light-theme a:hover,
 .light-theme .clickable-link:hover {
   color: #000000;
 }
 
-/* Кнопки алфавита */
 .alphabet-button {
   transition: background-color 0.2s ease;
 }
@@ -167,7 +106,6 @@ a:hover, .clickable-link:hover {
   background-color: #1979e6 !important;
 }
 
-/* Кнопки голосования */
 .vote-up:hover {
   background-color: rgb(21, 128, 61) !important;
 }
@@ -175,22 +113,41 @@ a:hover, .clickable-link:hover {
   background-color: rgb(185, 28, 28) !important;
 }
 
+/* Тёмная тема (по умолчанию) */
+:root {
+  --text-color: #ffffff;
+  --blockquote-color: #cccccc;
+  --bg-card: #212936;
+  --border-color: #2a2f3a;
+  --vote-bg: #1e242c;
+  --vote-border: #2a2f3a;
+  --link-color: #4dafff;
+  --contrast-bg: #ffffff;
+  --alphabet-grid-bg: #2a2f3a;
+  --alphabet-tile-bg: #373e4a;
+}
+
+/* Светлая тема */
+.light-theme {
+  --text-color: #000000;
+  --blockquote-color: #555;
+  --bg-card: #ffffff;
+  --border-color: #e0e0e0;
+  --vote-bg: #f3f4f6;
+  --vote-border: #e5e7eb;
+  --link-color: #0066cc;
+  --contrast-bg: #f0f0f0;
+  --alphabet-grid-bg: #e5e7eb;
+  --alphabet-tile-bg: #ffffff;
+}
+
+body.light-theme {
+  background-color: #eae7e1;
+}
+
+/* Скрываем кнопку ScrollToTop на мобильных */
 @media (max-width: 768px) {
   .scroll-to-top {
     display: none;
-  }
-}
-
-/* Для экранов меньше 600px */
-@media (max-width: 600px) {
-  /* Блок с кнопками (копирование, жалоба) переносим на новую строку */
-  .card-action-buttons {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    margin-top: 12px;
-  }
-  /* Уменьшаем размер шрифта заголовка карточки */
-  .card-title {
-    font-size: 1.8rem !important;
   }
 }
