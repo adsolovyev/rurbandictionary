@@ -13,7 +13,7 @@ const Header = () => {
   return (
     <>
       <header style={{ borderBottom: '1px solid #2a2f3a', backgroundColor: '#212936' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.5rem', paddingBottom: '0.5rem', flexWrap: 'wrap', gap: '8px' }}>
           <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }} title="Russian Urban Dictionary Educational">
             <svg viewBox="0 0 240 129" preserveAspectRatio="xMidYMid meet" style={{ height: '40px', width: 'auto', marginRight: '8px' }} aria-label="Логотип Russian Urban Dictionary">
               <title>Russian Urban Dictionary Educational</title>

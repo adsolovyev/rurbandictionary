@@ -70,13 +70,13 @@ export default function AlphabetBrowse() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: 0,
+                gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+              gap: '12px',
+              marginBottom: '32px',
               backgroundColor: 'var(--alphabet-grid-bg)',
               border: '1px solid var(--border-color)',
               borderRadius: '16px',
               overflow: 'hidden',
-              marginBottom: '32px',
             }}
           >
             {words.map((word) => (

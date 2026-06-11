@@ -109,7 +109,7 @@ export default function Card({
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <h2 style={{ margin: 0, fontSize: '2.5rem', lineHeight: 1, color: 'var(--text-color)' }}>{word}</h2>
+            <h2 className="card-title" style={{ margin: 0, fontSize: '2.5rem', lineHeight: 1, color: 'var(--text-color)' }}>{word}</h2>
             <button
               onClick={() => speakWord(word)}
               style={{
@@ -128,7 +128,7 @@ export default function Card({
               </svg>
             </button>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div className="card-action-buttons" style={{ display: 'flex', gap: '12px' }}>
             <button
               onClick={handleCopyLink}
               style={{
@@ -201,6 +201,8 @@ export default function Card({
             color: 'var(--blockquote-color)',
             whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
+            maxWidth: '100%',
+            overflow: 'hidden',
           }}
         >
           <LinkedText text={example} words={words} excludeWord={word} />

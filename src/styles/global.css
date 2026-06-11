@@ -15,6 +15,26 @@
   box-sizing: border-box;
 }
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+/* Для экранов меньше 640px уменьшаем padding */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 12px;
+  }
+}
+
 /* ========================================= */
 /* 2. Переменные темы (тёмная по умолчанию)   */
 /* ========================================= */
@@ -153,4 +173,24 @@ a:hover, .clickable-link:hover {
 }
 .vote-down:hover {
   background-color: rgb(185, 28, 28) !important;
+}
+
+@media (max-width: 768px) {
+  .scroll-to-top {
+    display: none;
+  }
+}
+
+/* Для экранов меньше 600px */
+@media (max-width: 600px) {
+  /* Блок с кнопками (копирование, жалоба) переносим на новую строку */
+  .card-action-buttons {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 12px;
+  }
+  /* Уменьшаем размер шрифта заголовка карточки */
+  .card-title {
+    font-size: 1.8rem !important;
+  }
 }

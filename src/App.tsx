@@ -21,6 +21,7 @@ import AdminUsers from './pages/AdminUsers';
 import Alphabet from './pages/Alphabet';
 import NonCyrillicBrowse from './pages/NonCyrillicBrowse';
 import UserDefinitions from './pages/UserDefinitions';
+import ScrollToTop from './components/ScrollToTop';
 import Help from './pages/Help';
 
 function App() {
@@ -76,6 +77,7 @@ function App() {
         </div>
       </main>
       <Footer />
+      <ScrollToTop />
     </BrowserRouter>
   );
 }

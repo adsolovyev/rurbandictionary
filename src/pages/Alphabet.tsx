@@ -9,8 +9,8 @@ export default function Alphabet() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(60px, 1fr))',
-          gap: '12px',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(50px, 1fr))',
+          gap: '8px',
         }}
       >
         {russianAlphabet.map(letter => (

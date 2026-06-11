@@ -78,7 +78,7 @@ export default function SearchBar() {
 
   return (
     <>
-      <div ref={wrapperRef} style={{ position: 'relative', flex: 1, minWidth: 0 }}>
+      <div ref={wrapperRef} style={{ position: 'relative', flex: 1, minWidth: 0, maxWidth: '100%' }}>
         <div
           style={{
             display: 'flex',
