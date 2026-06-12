@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
-import { reportDefinition } from '../services/api';
+import { reportDefinition, API_BASE } from '../services/api';
 import CardSimple from '../components/CardSimple';
 import type { Definition } from '../services/api';
 
@@ -22,7 +22,7 @@ export default function ReportForm() {
       return;
     }
     if (!definitionId) return;
-    fetch(`/api/definitions/${definitionId}`, { credentials: 'include' })
+    fetch(`${API_BASE}/definitions/${definitionId}`, { credentials: 'include' })
       .then(res => {
         if (!res.ok) throw new Error('Definition not found');
         return res.json();
@@ -85,15 +85,15 @@ export default function ReportForm() {
           Пожаловаться на определение
         </h2>
 
-<CardSimple
-  definition={definition}
-  showDateAndAuthor={true}
-  showVotes={true}
-  style={{
-    border: '2px solid #e0e0e0', 
-    marginBottom: '24px',
-  }}
-/>
+        <CardSimple
+          definition={definition}
+          showDateAndAuthor={true}
+          showVotes={true}
+          style={{
+            border: '2px solid #e0e0e0', 
+            marginBottom: '24px',
+          }}
+        />
 
         <p style={{ color: 'var(--blockquote-color)', marginBottom: '24px', textAlign: 'center' }}>
           Пожалуйста, выберите причину жалобы. Мы рассмотрим её в течение 24 часов.
