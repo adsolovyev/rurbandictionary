@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
+import { API_BASE } from '../services/api';
 
 export default function Login() {
   const [login, setLogin] = useState('');
@@ -125,7 +126,7 @@ export default function Login() {
         </div>
 
         <a
-          href="https://rurbandictionary-back.onrender.com/api/auth/google"
+          href={`${API_BASE}/auth/google`}
           style={{
             display: 'flex',
             alignItems: 'center',
