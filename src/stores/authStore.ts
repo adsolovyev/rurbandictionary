@@ -21,11 +21,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   loading: true,
 
 fetchMe: async () => {
-  const hasToken = document.cookie.split(';').some(cookie => cookie.trim().startsWith('token='));
-  if (!hasToken) {
-    set({ user: null, loading: false });
-    return;
-  }
   set({ loading: true });
   try {
     const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
