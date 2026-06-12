@@ -41,40 +41,41 @@ export default function Card({
   const [showModal, setShowModal] = useState(false);
   const { words } = useWordsStore();
 
-const handleVote = async (type: 'up' | 'down') => {
-  if (!user) {
-    navigate('/login?redirect=' + encodeURIComponent(window.location.pathname));
-    return;
-  }
-  if (userVote === type) {
-    if (type === 'up') {
-      setUpvotes(prev => prev - 1);
-    } else {
-      setDownvotes(prev => prev - 1);
+  const handleVote = async (type: 'up' | 'down') => {
+    if (!user) {
+      // Сохраняем полный путь (включая параметры поиска)
+      navigate(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+      return;
     }
-    setUserVote(null);
-    await vote(id, type); 
-    return;
-  }
+    if (userVote === type) {
+      if (type === 'up') {
+        setUpvotes(prev => prev - 1);
+      } else {
+        setDownvotes(prev => prev - 1);
+      }
+      setUserVote(null);
+      await vote(id, type);
+      return;
+    }
 
-  if (type === 'up') {
-    setUpvotes(prev => prev + 1);
-    if (userVote === 'down') {
-      setDownvotes(prev => prev - 1);
+    if (type === 'up') {
+      setUpvotes(prev => prev + 1);
+      if (userVote === 'down') {
+        setDownvotes(prev => prev - 1);
+      }
+    } else {
+      setDownvotes(prev => prev + 1);
+      if (userVote === 'up') {
+        setUpvotes(prev => prev - 1);
+      }
     }
-  } else {
-    setDownvotes(prev => prev + 1);
-    if (userVote === 'up') {
-      setUpvotes(prev => prev - 1);
-    }
-  }
-  setUserVote(type);
-  await vote(id, type);
-};
+    setUserVote(type);
+    await vote(id, type);
+  };
 
   const handleReport = () => {
     if (!user) {
-      navigate('/login?redirect=' + encodeURIComponent(window.location.pathname));
+      navigate(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
       return;
     }
     navigate(`/report/${id}`);

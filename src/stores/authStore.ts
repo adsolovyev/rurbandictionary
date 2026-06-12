@@ -58,9 +58,10 @@ fetchMe: async () => {
     set({ loading: false });
   },
 
-  logout: async () => {
-    set({ loading: true });
-    await fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' });
-    set({ user: null, loading: false });
-  },
+logout: async () => {
+  set({ loading: true });
+  await fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' });
+  set({ user: null, loading: false });
+  window.location.reload();
+},
 }));
