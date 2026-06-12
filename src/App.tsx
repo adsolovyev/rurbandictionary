@@ -59,30 +59,32 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Header />
-      <main style={{ minHeight: '80vh', paddingTop: '32px' }}>
-        <div className="container">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/add" element={<AddDefinition />} />
-            <Route path="/report/:definitionId" element={<ReportForm />} />
-            <Route path="/browse/:character" element={<AlphabetBrowse />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/alphabet" element={<Alphabet />} />
-            <Route path="/browse/non-cyrillic" element={<NonCyrillicBrowse />} />
-            <Route path="/user/:login" element={<UserDefinitions />} />
-            <Route path="/help" element={<Help />} />
-            <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin/pending" element={<ProtectedRoute requireAdmin><AdminPending /></ProtectedRoute>} />
-            <Route path="/admin/reports" element={<ProtectedRoute requireAdmin><AdminReports /></ProtectedRoute>} />
-            <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
-          </Routes>
-        </div>
-      </main>
-      <Footer />
-      <ScrollToTop />
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Header />
+        <main style={{ flex: 1, paddingTop: '32px' }}>
+          <div className="container">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/add" element={<AddDefinition />} />
+              <Route path="/report/:definitionId" element={<ReportForm />} />
+              <Route path="/browse/:character" element={<AlphabetBrowse />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/alphabet" element={<Alphabet />} />
+              <Route path="/browse/non-cyrillic" element={<NonCyrillicBrowse />} />
+              <Route path="/user/:login" element={<UserDefinitions />} />
+              <Route path="/help" element={<Help />} />
+              <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/admin/pending" element={<ProtectedRoute requireAdmin><AdminPending /></ProtectedRoute>} />
+              <Route path="/admin/reports" element={<ProtectedRoute requireAdmin><AdminReports /></ProtectedRoute>} />
+              <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
+            </Routes>
+          </div>
+        </main>
+        <Footer />
+        <ScrollToTop />
+      </div>
     </BrowserRouter>
   );
 }
