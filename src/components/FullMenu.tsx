@@ -12,10 +12,11 @@ const allSymbols = [...russianAlphabet, '#'];
 export default function FullMenu({ onClose }: FullMenuProps) {
   const { user, logout } = useAuthStore();
   const handleLinkClick = () => onClose();
-  const handleLogout = async () => {
-    await logout();
-    onClose();
-  };
+const handleLogout = async () => {
+  await logout();
+  onClose();
+  window.location.reload();
+};
   const { dyslexicFont, toggleDyslexicFont } = useSettingsStore();
 
   return (
