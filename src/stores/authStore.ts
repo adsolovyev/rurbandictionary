@@ -21,15 +21,20 @@ export const useAuthStore = create<AuthState>((set) => ({
   loading: true,
 
   fetchMe: async () => {
-    set({ loading: true });
-    try {
-      const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
-      const data = res.ok ? await res.json() : null;
-      set({ user: data?.user || null, loading: false });
-    } catch {
-      set({ user: null, loading: false });
-    }
-  },
+  const hasToken = document.cookie.split(';').some(cookie => cookie.trim().startsWith('token='));
+  if (!hasToken) {
+    set({ user: null, loading: false });
+    return;
+  }
+  set({ loading: true });
+  try {
+    const res = await fetch('/api/auth/me', { credentials: 'include' });
+    const data = res.ok ? await res.json() : null;
+    set({ user: data?.user || null, loading: false });
+  } catch {
+    set({ user: null, loading: false });
+  }
+},
 
   login: async (login, password) => {
     set({ loading: true });
