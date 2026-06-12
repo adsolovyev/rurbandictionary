@@ -125,7 +125,7 @@ export default function Login() {
         </div>
 
         <a
-          href="/api/auth/google"
+          href={`${import.meta.env.VITE_API_URL || '/api'}/auth/google`}
           style={{
             display: 'flex',
             alignItems: 'center',
