@@ -20,7 +20,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   loading: true,
 
-  fetchMe: async () => {
+fetchMe: async () => {
   const hasToken = document.cookie.split(';').some(cookie => cookie.trim().startsWith('token='));
   if (!hasToken) {
     set({ user: null, loading: false });
@@ -28,7 +28,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   }
   set({ loading: true });
   try {
-    const res = await fetch('/api/auth/me', { credentials: 'include' });
+    const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
     const data = res.ok ? await res.json() : null;
     set({ user: data?.user || null, loading: false });
   } catch {
