@@ -129,7 +129,7 @@ a:hover, .clickable-link:hover {
 
 /* Светлая тема */
 .light-theme {
-  --text-color: #000000;
+  --text-color: #333333;
   --blockquote-color: #555;
   --bg-card: #ffffff;
   --border-color: #e0e0e0;
