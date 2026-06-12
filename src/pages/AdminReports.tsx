@@ -159,7 +159,6 @@ export default function AdminReports() {
         <p><strong>Дата жалобы:</strong> <span style={{ color: 'var(--text-color)' }}>{new Date(currentReport.created_at).toLocaleString()}</span></p>
         <hr style={{ borderColor: 'var(--border-color)', margin: '12px 0' }} />
         <p><strong>Автор определения:</strong> <span style={{ color: 'var(--text-color)' }}>{currentReport.author_login} (ID: {currentReport.author_id})</span></p>
-        <p><strong>Статус автора:</strong> <span style={{ color: 'var(--text-color)' }}>{currentReport.is_banned ? 'Забанен' : 'Активен'}</span></p>
         <p><strong>Активных определений автора:</strong> <span style={{ color: 'var(--text-color)' }}>{currentReport.author_definitions_count}</span></p>
         <p><strong>Активных жалоб на автора:</strong> <span style={{ color: 'var(--text-color)' }}>{currentReport.author_reports_count}</span></p>
       </div>
