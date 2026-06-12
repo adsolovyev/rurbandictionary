@@ -89,7 +89,7 @@ export default function SearchResults() {
   <LoadMoreButton onClick={loadMore} loading={loadingMore} />
 ) : (
   <div style={{ textAlign: 'center', margin: '32px 0', color: 'var(--blockquote-color)' }}>
-    <p>Больше определений нет.</p>
+    <p>Это все определения по запросу "{word}".</p>
   </div>
 )}
     </div>
