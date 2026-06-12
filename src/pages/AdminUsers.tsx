@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { Navigate } from 'react-router-dom';
+import { API_BASE } from '../services/api';
 
 interface User {
   id: number;
@@ -35,7 +36,7 @@ export default function AdminUsers() {
       abortControllerRef.current = new AbortController();
 
       setLoading(true);
-      fetch(`/api/admin/users/search?q=${encodeURIComponent(searchTerm)}`, {
+      fetch(`${API_BASE}/admin/users/search?q=${encodeURIComponent(searchTerm)}`, {
         credentials: 'include',
         signal: abortControllerRef.current.signal,
       })
@@ -60,7 +61,7 @@ export default function AdminUsers() {
       return;
     }
     try {
-      const res = await fetch(`/api/admin/users/${userId}/reset-password`, {
+      const res = await fetch(`${API_BASE}/admin/users/${userId}/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newPassword }),
