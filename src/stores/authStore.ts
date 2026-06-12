@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { API_BASE } from '../services/api';
 
 interface User {
   id: number;
@@ -19,11 +20,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   loading: true,
 
-  // Загружает текущего пользователя с бэкенда (вызывается при загрузке приложения)
   fetchMe: async () => {
     set({ loading: true });
     try {
-      const res = await fetch('/api/auth/me', { credentials: 'include' });
+      const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
       const data = res.ok ? await res.json() : null;
       set({ user: data?.user || null, loading: false });
     } catch {
@@ -31,10 +31,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  // Вход в систему: отправляет логин/пароль, получает пользователя и сохраняет его
   login: async (login, password) => {
     set({ loading: true });
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ login, password }),
@@ -47,10 +46,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     return user;
   },
 
-  // Регистрация нового пользователя
   register: async (login, email, password) => {
     set({ loading: true });
-    const res = await fetch('/api/auth/register', {
+    const res = await fetch(`${API_BASE}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ login, email, password }),
@@ -60,10 +58,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: false });
   },
 
-  // Выход из системы: сбрасывает пользователя и очищает сессию на сервере
   logout: async () => {
     set({ loading: true });
-    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+    await fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' });
     set({ user: null, loading: false });
   },
 }));
