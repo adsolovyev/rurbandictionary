@@ -27,6 +27,7 @@ import Help from './pages/Help';
 
 function App() {
   const fetchMe = useAuthStore(state => state.fetchMe);
+  const user = useAuthStore(state => state.user);
   const fetchSettings = useSettingsStore(state => state.fetchSettings);
   const fetchWords = useWordsStore(state => state.fetchWords);
   const { theme } = useThemeStore();
@@ -42,7 +43,7 @@ function App() {
 
 useEffect(() => {
   fetchSettings();
-}, [fetchSettings]);
+}, [fetchSettings, user]);
 
   useEffect(() => {
     fetchWords();
