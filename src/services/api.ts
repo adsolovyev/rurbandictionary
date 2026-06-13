@@ -1,5 +1,19 @@
 // src/services/api.ts
-export const API_BASE = '/api';
+
+// Определяем мобильное устройство по User-Agent
+const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+// Базовый URL для API
+const getApiBase = () => {
+  // Для мобильных – прямой URL бэкенда (кросс-доменный)
+  if (isMobileDevice()) {
+    return 'https://rurbandictionary-back.onrender.com/api';
+  }
+  // Для ПК – используем переменную окружения (если есть) или относительный путь
+  return import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api';
+};
+
+export const API_BASE = getApiBase();
 
 export interface Definition {
   id: number;
@@ -125,20 +139,15 @@ export const getDefinitionsByAuthor = async (author: string, page = 1, limit = 1
   return res.json();
 };
 
-// Админские эндпоинты для модерации определений
+// Админские эндпоинты
 export const getPendingDefinitions = async (): Promise<Definition[]> => {
-  const res = await fetch(`${API_BASE}/admin/definitions/pending`, {
-    credentials: 'include',
-  });
+  const res = await fetch(`${API_BASE}/admin/definitions/pending`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch pending definitions');
   return res.json();
 };
 
 export const approveDefinition = async (id: number): Promise<void> => {
-  const res = await fetch(`${API_BASE}/admin/definitions/${id}/approve`, {
-    method: 'PUT',
-    credentials: 'include',
-  });
+  const res = await fetch(`${API_BASE}/admin/definitions/${id}/approve`, { method: 'PUT', credentials: 'include' });
   if (!res.ok) throw new Error('Failed to approve definition');
 };
 
@@ -159,9 +168,7 @@ export const getReports = async () => {
 };
 
 export const getDefinitionsByExactWord = async (word: string, limit = 5): Promise<Definition[]> => {
-  const res = await fetch(`${API_BASE}/definitions/word/${encodeURIComponent(word)}/exact?limit=${limit}`, {
-    credentials: 'include',
-  });
+  const res = await fetch(`${API_BASE}/definitions/word/${encodeURIComponent(word)}/exact?limit=${limit}`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch definitions by exact word');
   return res.json();
 };
@@ -223,25 +230,17 @@ export const resolveReport = async (id: number, adminComment?: string): Promise<
 };
 
 export const blockDefinition = async (id: number): Promise<void> => {
-  const res = await fetch(`${API_BASE}/admin/definitions/${id}/block`, {
-    method: 'PUT',
-    credentials: 'include',
-  });
+  const res = await fetch(`${API_BASE}/admin/definitions/${id}/block`, { method: 'PUT', credentials: 'include' });
   if (!res.ok) throw new Error('Failed to block definition');
 };
 
 export const banUser = async (userId: number): Promise<void> => {
-  const res = await fetch(`${API_BASE}/admin/users/${userId}/ban`, {
-    method: 'PUT',
-    credentials: 'include',
-  });
+  const res = await fetch(`${API_BASE}/admin/users/${userId}/ban`, { method: 'PUT', credentials: 'include' });
   if (!res.ok) throw new Error('Failed to ban user');
 };
 
 export const getLatestDefinitions = async (page = 1, limit = 20): Promise<Definition[]> => {
-  const res = await fetch(`${API_BASE}/definitions/latest?page=${page}&limit=${limit}`, {
-    credentials: 'include',
-  });
+  const res = await fetch(`${API_BASE}/definitions/latest?page=${page}&limit=${limit}`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch latest definitions');
   return res.json();
 };
@@ -258,9 +257,7 @@ export interface SuggestionData {
 }
 
 export const getSuggestionsData = async (): Promise<SuggestionData[]> => {
-  const res = await fetch(`${API_BASE}/definitions/suggestions-data`, {
-    credentials: 'include',
-  });
+  const res = await fetch(`${API_BASE}/definitions/suggestions-data`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to fetch suggestions data');
   return res.json();
 };
