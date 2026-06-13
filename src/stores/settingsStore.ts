@@ -13,6 +13,15 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   loading: true,
 
   fetchSettings: async () => {
+    const saved = localStorage.getItem('dyslexicFont');
+    if (saved !== null) {
+      const isEnabled = saved === 'true';
+      set({ dyslexicFont: isEnabled, loading: false });
+      document.body.classList.toggle('dyslexic', isEnabled);
+    } else {
+      set({ loading: false });
+    }
+
     try {
       const res = await fetch(`${API_BASE}/user/settings`, { credentials: 'include' });
       if (res.ok) {
@@ -20,10 +29,11 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         const isEnabled = data.dyslexic_font === 'true';
         set({ dyslexicFont: isEnabled, loading: false });
         document.body.classList.toggle('dyslexic', isEnabled);
-      } else {
-        set({ loading: false });
+        localStorage.setItem('dyslexicFont', String(isEnabled));
       }
-    } catch {
+    } catch (err) {
+      void err;
+    } finally {
       set({ loading: false });
     }
   },
@@ -33,6 +43,9 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     const newValue = !current;
     set({ dyslexicFont: newValue });
     document.body.classList.toggle('dyslexic', newValue);
+
+    localStorage.setItem('dyslexicFont', String(newValue));
+
     try {
       await fetch(`${API_BASE}/user/settings`, {
         method: 'POST',
@@ -41,7 +54,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         credentials: 'include',
       });
     } catch (err) {
-      console.error('Failed to save setting', err);
+      console.error('Failed to save setting on server', err);
     }
   },
 }));
