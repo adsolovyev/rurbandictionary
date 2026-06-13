@@ -103,10 +103,18 @@ export default function Card({
         background: 'var(--bg-card)',
         color: 'var(--text-color)',
       }}>
-        {/* Верхняя строка: слово + динамик + иконки справа */}
         <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-          <div className="title-area" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '8px', flex: 1 }}>
-            <h2 className="card-title" style={{ margin: 0, fontSize: '2.5rem', lineHeight: 1.2, color: 'var(--text-color)', display: 'inline' }}>{word}</h2>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '8px', flex: 1 }}>
+            <h2 className="card-title" style={{
+              margin: 0,
+              fontSize: '2.5rem',
+              lineHeight: 1.2,
+              color: 'var(--text-color)',
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+            }}>
+              {word}
+            </h2>
             <button
               onClick={() => speakWord(word)}
               className="speak-button"
@@ -117,7 +125,7 @@ export default function Card({
                 padding: 0,
                 display: 'inline-flex',
                 alignItems: 'center',
-                transform: 'translateY(5px)',
+                alignSelf: 'center',
               }}
               title="Произнести слово"
             >
@@ -126,7 +134,7 @@ export default function Card({
               </svg>
             </button>
           </div>
-          <div className="action-buttons" style={{ display: 'flex', gap: '12px', flexShrink: 0 }}>
+          <div className="action-buttons" style={{ display: 'flex', gap: '8px', flexShrink: 0, marginLeft: '12px' }}>
             <button
               onClick={handleCopyLink}
               className="card-action-btn"
@@ -208,8 +216,15 @@ export default function Card({
           <LinkedText text={example} words={words} excludeWord={word} />
         </blockquote>
 
-        <div className="card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', flexWrap: 'wrap', gap: '12px' }}>
-          <div className="meta" style={{ fontSize: '0.85rem', color: 'var(--blockquote-color)' }}>
+        <div className="card-footer" style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: '12px',
+          flexWrap: 'wrap',
+          gap: '12px',
+        }}>
+          <div style={{ fontSize: '0.85rem', color: 'var(--blockquote-color)' }}>
             <span
               onClick={() => navigate(`/search?word=${encodeURIComponent(word)}`)}
               className="clickable-link"

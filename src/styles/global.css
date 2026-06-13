@@ -113,7 +113,6 @@ a:hover, .clickable-link:hover {
   background-color: rgb(185, 28, 28) !important;
 }
 
-/* Тёмная тема (по умолчанию) */
 :root {
   --text-color: #ffffff;
   --blockquote-color: #cccccc;
@@ -127,7 +126,6 @@ a:hover, .clickable-link:hover {
   --alphabet-tile-bg: #373e4a;
 }
 
-/* Светлая тема */
 .light-theme {
   --text-color: #333333;
   --blockquote-color: #555;
@@ -145,22 +143,17 @@ body.light-theme {
   background-color: #eae7e1;
 }
 
-/* Скрываем кнопку ScrollToTop на мобильных */
+/* Медиа-запросы для хедера и поиска */
 @media (max-width: 768px) {
   .scroll-to-top {
     display: none;
   }
-}
-
-@media (max-width: 768px) {
   .container {
     padding: 0 12px;
   }
-
   header .logo svg {
     height: 32px !important;
   }
-
   .search-bar-wrapper {
     flex: 1;
     min-width: 0;
@@ -171,33 +164,8 @@ body.light-theme {
   .container {
     padding: 0 8px;
   }
-
   header .logo svg {
     height: 28px !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .search-bar {
-    padding: 0 4px !important;
-    height: 34px !important;
-  }
-  .search-bar input {
-    font-size: 0.9rem !important;
-  }
-  .search-bar svg {
-    width: 18px !important;
-    height: 18px !important;
-  }
-}
-
-@media (max-width: 400px) {
-  .container {
-    padding: 0 8px !important;
-  }
-  .logo {
-    height: 28px !important;
-    margin-right: 2px !important;
   }
   .search-bar-wrapper input {
     font-size: 0.75rem !important;
@@ -213,6 +181,7 @@ body.light-theme {
   }
 }
 
+/* Адаптация карточек для мобильных */
 @media (max-width: 600px) {
   .card-header {
     flex-direction: column !important;
@@ -227,7 +196,8 @@ body.light-theme {
     align-items: stretch !important;
   }
   .vote-buttons {
-    align-self: flex-start;
+    align-self: flex-end !important;
+    margin-top: 0;
   }
   .card-title {
     font-size: 1.8rem !important;
