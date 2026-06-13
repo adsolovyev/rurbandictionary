@@ -1,5 +1,21 @@
-export const API_BASE = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api';
+// src/services/api.ts
 
+// Определяем, мобильное ли устройство
+const isMobileDevice = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+// Выбираем базовый URL в зависимости от устройства
+const getApiBase = () => {
+  if (isMobileDevice()) {
+    // Для мобильных – прямой URL бэкенда (кросс-доменный запрос, но кука с SameSite=None должна работать)
+    return 'https://rurbandictionary-back.onrender.com/api';
+  }
+  // Для ПК – относительный путь (работает через прокси на Render)
+  return '/api';
+};
+
+export const API_BASE = getApiBase();
+
+// Остальной код без изменений (экспорты интерфейсов и функций)
 export interface Definition {
   id: number;
   word: string;
