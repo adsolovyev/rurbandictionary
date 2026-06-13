@@ -29,7 +29,6 @@ function App() {
   const fetchMe = useAuthStore(state => state.fetchMe);
   const fetchSettings = useSettingsStore(state => state.fetchSettings);
   const fetchWords = useWordsStore(state => state.fetchWords);
-  const user = useAuthStore(state => state.user);
   const { theme } = useThemeStore();
   const fetchSuggestionsData = useSuggestionsStore(state => state.fetchData);
 
@@ -41,9 +40,9 @@ function App() {
     fetchMe();
   }, [fetchMe]);
 
-  useEffect(() => {
-    if (user) fetchSettings();
-  }, [user, fetchSettings]);
+useEffect(() => {
+  fetchSettings();
+}, [fetchSettings]);
 
   useEffect(() => {
     fetchWords();
