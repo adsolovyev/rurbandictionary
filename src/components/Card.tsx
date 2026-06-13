@@ -129,7 +129,7 @@ export default function Card({
                   display: 'inline-flex',
                   alignItems: 'center',
                   verticalAlign: 'middle',
-                  transform: 'translateY(-4px)',
+                  transform: 'translateY(-14px)',
                 }}
                 title="Произнести слово"
               >
