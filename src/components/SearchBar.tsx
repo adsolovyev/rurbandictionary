@@ -96,7 +96,7 @@ export default function SearchBar() {
 
   return (
     <>
-      <div ref={wrapperRef} style={{ position: 'relative', flex: 1, minWidth: 0 }}>
+      <div ref={wrapperRef} className="search-bar-wrapper" style={{ position: 'relative', flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#1e242c', border: '1px solid #4b5563', borderRadius: '40px', padding: '0 8px', gap: '8px', height: '40px' }}>
           {showSuggestions && filteredSuggestions.length > 0 ? (
             <div

@@ -151,3 +151,42 @@ body.light-theme {
     display: none;
   }
 }
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 12px;
+  }
+
+  header .logo svg {
+    height: 32px !important;
+  }
+
+  .search-bar-wrapper {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 8px;
+  }
+
+  header .logo svg {
+    height: 28px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-bar {
+    padding: 0 4px !important;
+    height: 34px !important;
+  }
+  .search-bar input {
+    font-size: 0.9rem !important;
+  }
+  .search-bar svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
