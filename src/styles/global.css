@@ -190,3 +190,25 @@ body.light-theme {
     height: 18px !important;
   }
 }
+
+@media (max-width: 400px) {
+  .container {
+    padding: 0 8px !important;
+  }
+  .logo {
+    height: 28px !important;
+    margin-right: 2px !important;
+  }
+  .search-bar-wrapper input {
+    font-size: 0.75rem !important;
+    padding: 2px 0 !important;
+  }
+  .search-bar-wrapper svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  .search-bar-wrapper button svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
