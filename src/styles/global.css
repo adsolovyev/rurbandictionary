@@ -212,3 +212,27 @@ body.light-theme {
     height: 18px !important;
   }
 }
+
+@media (max-width: 600px) {
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .action-buttons {
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+  .card-footer {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .vote-buttons {
+    align-self: flex-start;
+  }
+  .card-title {
+    font-size: 1.8rem !important;
+  }
+  .speak-button {
+    transform: translateY(2px) !important;
+  }
+}

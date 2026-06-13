@@ -43,31 +43,22 @@ export default function Card({
 
   const handleVote = async (type: 'up' | 'down') => {
     if (!user) {
-      // Сохраняем полный путь (включая параметры поиска)
       navigate(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
       return;
     }
     if (userVote === type) {
-      if (type === 'up') {
-        setUpvotes(prev => prev - 1);
-      } else {
-        setDownvotes(prev => prev - 1);
-      }
+      if (type === 'up') setUpvotes(prev => prev - 1);
+      else setDownvotes(prev => prev - 1);
       setUserVote(null);
       await vote(id, type);
       return;
     }
-
     if (type === 'up') {
       setUpvotes(prev => prev + 1);
-      if (userVote === 'down') {
-        setDownvotes(prev => prev - 1);
-      }
+      if (userVote === 'down') setDownvotes(prev => prev - 1);
     } else {
       setDownvotes(prev => prev + 1);
-      if (userVote === 'up') {
-        setUpvotes(prev => prev - 1);
-      }
+      if (userVote === 'up') setUpvotes(prev => prev - 1);
     }
     setUserVote(type);
     await vote(id, type);
@@ -104,21 +95,21 @@ export default function Card({
 
   return (
     <>
-      <div
-        style={{
-          border: '2px solid var(--border-color)',
-          borderRadius: '16px',
-          padding: '20px',
-          marginBottom: '16px',
-          background: 'var(--bg-card)',
-          color: 'var(--text-color)',
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <h2 className="card-title" style={{ margin: 0, fontSize: '2.5rem', lineHeight: 1, color: 'var(--text-color)' }}>{word}</h2>
+      <div className="card" style={{
+        border: '2px solid var(--border-color)',
+        borderRadius: '16px',
+        padding: '20px',
+        marginBottom: '16px',
+        background: 'var(--bg-card)',
+        color: 'var(--text-color)',
+      }}>
+        {/* Верхняя строка: слово + динамик + иконки справа */}
+        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+          <div className="title-area" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '8px', flex: 1 }}>
+            <h2 className="card-title" style={{ margin: 0, fontSize: '2.5rem', lineHeight: 1.2, color: 'var(--text-color)', display: 'inline' }}>{word}</h2>
             <button
               onClick={() => speakWord(word)}
+              className="speak-button"
               style={{
                 background: 'none',
                 border: 'none',
@@ -135,9 +126,10 @@ export default function Card({
               </svg>
             </button>
           </div>
-          <div className="card-action-buttons" style={{ display: 'flex', gap: '12px' }}>
+          <div className="action-buttons" style={{ display: 'flex', gap: '12px', flexShrink: 0 }}>
             <button
               onClick={handleCopyLink}
+              className="card-action-btn"
               style={{
                 background: 'none',
                 border: 'none',
@@ -166,6 +158,7 @@ export default function Card({
             </button>
             <button
               onClick={handleReport}
+              className="card-action-btn"
               style={{
                 background: 'none',
                 border: 'none',
@@ -215,8 +208,8 @@ export default function Card({
           <LinkedText text={example} words={words} excludeWord={word} />
         </blockquote>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
-          <div style={{ fontSize: '0.85rem', color: 'var(--blockquote-color)' }}>
+        <div className="card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', flexWrap: 'wrap', gap: '12px' }}>
+          <div className="meta" style={{ fontSize: '0.85rem', color: 'var(--blockquote-color)' }}>
             <span
               onClick={() => navigate(`/search?word=${encodeURIComponent(word)}`)}
               className="clickable-link"
@@ -235,15 +228,13 @@ export default function Card({
             , {formattedDate}
           </div>
 
-          <div
-            style={{
-              display: 'flex',
-              borderRadius: '20px',
-              border: '1px solid var(--vote-border)',
-              overflow: 'hidden',
-              backgroundColor: 'var(--vote-bg)',
-            }}
-          >
+          <div className="vote-buttons" style={{
+            display: 'flex',
+            borderRadius: '20px',
+            border: '1px solid var(--vote-border)',
+            overflow: 'hidden',
+            backgroundColor: 'var(--vote-bg)',
+          }}>
             <button
               onClick={() => handleVote('up')}
               className="vote-up"
