@@ -262,3 +262,53 @@ body.light-theme {
     margin-top: 16px !important;
   }
 }
+
+/* Компактная мобильная версия форм (только для экранов ≤600px) */
+@media (max-width: 600px) {
+  div[style*="max-width: 400px"] {
+    max-width: 100% !important;
+    padding: 12px !important;
+  }
+  div[style*="background-color: var(--bg-card)"] {
+    padding: 16px 12px !important;
+  }
+  h2[style*="text-align: center"] {
+    font-size: 1.4rem !important;
+    margin-top: 8px !important;
+    margin-bottom: 24px !important;
+  }
+  div[style*="margin-bottom: 16px"] {
+    margin-bottom: 12px !important;
+  }
+  div[style*="margin-bottom: 20px"] {
+    margin-bottom: 16px !important;
+  }
+  input[style*="background-color: var(--vote-bg)"] {
+    padding: 6px 10px !important;
+  }
+  label[style*="color: var(--text-color)"] {
+    margin-bottom: 4px !important;
+    font-size: 0.85rem !important;
+  }
+  button[style*="background: var(--link-color)"] {
+    padding: 8px !important;
+  }
+  div[style*="margin-top: 32px"] {
+    margin-top: 20px !important;
+  }
+  p[style*="margin-top: 20px"] {
+    margin-top: 12px !important;
+  }
+  div[style*="margin-top: 16px"] {
+    margin-top: 12px !important;
+  }
+  a[style*="background: #ffffff"] {
+    padding: 6px 12px !important;
+  }
+  a[style*="background: #ffffff"] span {
+    font-size: 0.8rem !important;
+  }
+  div[style*="gap: 8px"] span {
+    font-size: 0.7rem !important;
+  }
+}
