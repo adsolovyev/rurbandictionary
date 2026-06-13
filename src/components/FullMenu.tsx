@@ -57,7 +57,6 @@ const handleLogout = async () => {
           )}
         </div>
         <div style={{ flex: '2', minWidth: '200px', maxWidth: '800px', margin: '0 auto' }}>
-          <h3 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#ffffff' }}>Алфавитный указатель</h3>
           <div
             style={{
               display: 'grid',
