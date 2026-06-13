@@ -312,3 +312,16 @@ body.light-theme {
     font-size: 0.7rem !important;
   }
 }
+
+@media (max-width: 600px) {
+  body.dyslexic .logo svg {
+    height: 28px !important;
+    margin-right: 4px !important;
+  }
+  body.dyslexic .search-bar-wrapper {
+    min-width: 120px !important;
+  }
+  body.dyslexic .search-bar-wrapper input {
+    font-size: 0.7rem !important;
+  }
+}
