@@ -207,170 +207,58 @@ body.light-theme {
   }
 }
 
-/* ===== Адаптивные формы логина и регистрации ===== */
-.auth-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 80px);
-  padding: 20px;
-}
-
-.auth-container {
-  max-width: 400px;
-  width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 24px;
-  padding: 32px 24px;
-  transition: padding 0.2s;
-}
-
-.auth-container h2 {
-  text-align: center;
-  color: var(--text-color);
-  margin-bottom: 32px;
-  font-size: 1.8rem;
-}
-
-.input-group {
-  margin-bottom: 20px;
-}
-
-.input-group label {
-  display: block;
-  color: var(--text-color);
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 12px;
-  background: var(--vote-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  color: var(--text-color);
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
-
-.input-group input:focus {
-  outline: none;
-  border-color: var(--link-color);
-}
-
-.error-message {
-  color: #f44336;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 12px;
-  background: var(--link-color);
-  border: none;
-  border-radius: 40px;
-  color: #fff;
-  font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  margin-bottom: 20px;
-}
-
-.submit-btn:hover {
-  background: #3a8fcc;
-}
-
-.register-link {
-  text-align: center;
-  color: var(--text-color);
-  margin-bottom: 20px;
-}
-
-.register-link a {
-  color: var(--link-color);
-  text-decoration: none;
-}
-
-.register-link a:hover {
-  text-decoration: underline;
-}
-
-.reset-hint {
-  text-align: center;
-  color: #ffaa00;
-  font-size: 0.85rem;
-  margin-bottom: 24px;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.divider hr {
-  flex: 1;
-  border: none;
-  border-top: 1px solid var(--border-color);
-}
-
-.divider span {
-  color: var(--blockquote-color);
-  font-size: 0.8rem;
-  white-space: nowrap;
-}
-
-.google-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  width: 100%;
-  padding: 10px 16px;
-  background: #fff;
-  border: 1px solid #dadce0;
-  border-radius: 40px;
-  text-decoration: none;
-  color: #000;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.google-btn:hover {
-  background: #f5f5f5;
-}
-
-/* Мобильная адаптация */
-@media (max-width: 480px) {
-  .auth-container {
-    padding: 24px 20px;
+/* Мобильная адаптация страниц логина и регистрации (без изменения компонентов) */
+@media (max-width: 600px) {
+  /* Основной контейнер (внешний div с max-width: 400px) */
+  div[style*="max-width: 400px"] {
+    max-width: 100% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
   }
-  .auth-container h2 {
-    font-size: 1.5rem;
-    margin-bottom: 24px;
+  /* Внутренняя карточка (фон var(--bg-card)) */
+  div[style*="background-color: var(--bg-card)"] {
+    padding: 20px 16px !important;
   }
-  .input-group input {
-    padding: 10px;
+  /* Заголовок h2 */
+  h2[style*="text-align: center"] {
+    font-size: 1.5rem !important;
+    margin-top: 24px !important;
+    margin-bottom: 28px !important;
   }
-  .submit-btn, .google-btn {
-    padding: 10px;
+  /* Поля ввода */
+  input[style*="background-color: var(--vote-bg)"] {
+    padding: 8px 10px !important;
+    font-size: 0.9rem !important;
   }
-}
-
-@media (max-width: 380px) {
-  .auth-container {
-    padding: 20px 16px;
+  /* Кнопка отправки */
+  button[style*="background: var(--link-color)"] {
+    padding: 8px !important;
+    font-size: 0.9rem !important;
   }
-  .divider span {
-    font-size: 0.7rem;
+  /* Кнопка Google */
+  a[style*="background: #ffffff"] {
+    padding: 8px 12px !important;
   }
-  .google-btn span {
-    font-size: 0.85rem;
+  a[style*="background: #ffffff"] span {
+    font-size: 0.85rem !important;
+  }
+  /* Разделитель */
+  div[style*="display: flex; align-items: center; gap: 8px"] span {
+    font-size: 0.7rem !important;
+  }
+  /* Ошибка */
+  div[style*="color: #f44336"] {
+    font-size: 0.8rem !important;
+    margin-bottom: 16px !important;
+  }
+  /* Подсказка о сбросе пароля */
+  div[style*="color: #ffaa00"] {
+    font-size: 0.75rem !important;
+    margin-bottom: 16px !important;
+  }
+  /* Ссылка на регистрацию */
+  p[style*="margin-top: 20px"] {
+    font-size: 0.85rem !important;
+    margin-top: 16px !important;
   }
 }
