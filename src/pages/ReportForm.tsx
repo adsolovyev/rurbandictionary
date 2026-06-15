@@ -96,7 +96,7 @@ export default function ReportForm() {
         />
 
         <p style={{ color: 'var(--blockquote-color)', marginBottom: '24px', textAlign: 'center' }}>
-          Пожалуйста, выберите причину жалобы. Мы рассмотрим её в течение 24 часов.
+          Пожалуйста, выберите причину жалобы. Мы рассмотрим её когда-нибудь.
         </p>
 
         <form onSubmit={handleSubmit}>
