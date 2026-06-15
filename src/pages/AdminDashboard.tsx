@@ -164,7 +164,36 @@ export default function AdminDashboard() {
     />
   </div>
 </div>
-
+<div style={{
+  backgroundColor: 'var(--contrast-bg)',
+  borderRadius: '8px',
+  padding: '16px',
+  textAlign: 'center',
+  marginTop: '20px',
+  border: '1px solid var(--border-color)',
+}}>
+  <a
+    href="https://dashboard.simpleanalytics.com/?utm_source=rude-lv1t.onrender.com&utm_content=badge&affiliate=hapef"
+    referrerPolicy="origin"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <picture>
+      <source
+        srcSet="https://simpleanalyticsbadges.com/rude-lv1t.onrender.com?mode=dark"
+        media="(prefers-color-scheme: dark)"
+      />
+      <img
+        src="https://simpleanalyticsbadges.com/rude-lv1t.onrender.com?mode=light"
+        loading="lazy"
+        referrerPolicy="no-referrer"
+        crossOrigin="anonymous"
+        alt="Simple Analytics"
+        style={{ maxWidth: '100%', height: 'auto' }}
+      />
+    </picture>
+  </a>
+</div>
         
       </div>
     </div>
