@@ -78,7 +78,6 @@ export default function AdminResetRequests() {
   // ---- ПОИСК ПОЛЬЗОВАТЕЛЕЙ ----
   useEffect(() => {
     if (searchTerm.length < 2) {
-      // Не сбрасываем users, просто не делаем запрос
       return;
     }
 
@@ -145,7 +144,7 @@ export default function AdminResetRequests() {
     }
   };
 
-  // ---- ПРИМЕНЕНИЕ ПАРОЛЯ ----
+  // ---- ПРИМЕНЕНИЕ ПАРОЛЯ К ВЫБРАННОМУ ПОЛЬЗОВАТЕЛЮ ----
   const handleApplyPassword = async (userId: number) => {
     if (!currentRequest) return;
     if (!newPassword) {
@@ -294,13 +293,13 @@ export default function AdminResetRequests() {
                 </div>
                 <div>
                   {selectedUserId === u.id ? (
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
                       <input
                         type="text"
                         placeholder="Новый пароль"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        style={{ padding: '4px', borderRadius: '4px', border: 'none' }}
+                        style={{ padding: '4px', borderRadius: '4px', border: 'none', width: '140px' }}
                       />
                       <button onClick={() => handleApplyPassword(u.id)} style={{ background: '#4caf50', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', color: '#fff' }}>Применить</button>
                       <button onClick={() => { setSelectedUserId(null); setNewPassword(''); }} style={{ background: '#f44336', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', color: '#fff' }}>Отмена</button>
@@ -315,27 +314,27 @@ export default function AdminResetRequests() {
         )}
         {showNoResults && <div style={{ color: 'var(--blockquote-color)', marginBottom: '12px' }}>Пользователь не найден.</div>}
 
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '12px' }}>
-          <button
-            onClick={() => {
-              if (selectedUserId === null) {
-                setMessage({ text: 'Сначала выберите пользователя', type: 'error' });
-                setTimeout(() => setMessage(null), 3000);
-                return;
-              }
-              handleApplyPassword(selectedUserId);
-            }}
-            style={{ ...actionButtonStyle, background: '#4caf50' }}
-          >
-            Применить новый пароль
-          </button>
-          <button onClick={handleReject} style={{ ...actionButtonStyle, background: '#f44336' }}>
-            Отклонить заявку
-          </button>
-          <button onClick={() => navigate('/admin')} style={{ ...actionButtonStyle, background: '#6c757d' }}>
-            Вернуться в дашборд
-          </button>
-        </div>
+        {/* Блок действий – появляется только когда выбран пользователь */}
+        {selectedUserId !== null && (
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '12px' }}>
+            <button
+              onClick={() => {
+                if (selectedUserId === null) {
+                  setMessage({ text: 'Сначала выберите пользователя', type: 'error' });
+                  setTimeout(() => setMessage(null), 3000);
+                  return;
+                }
+                handleApplyPassword(selectedUserId);
+              }}
+              style={{ ...actionButtonStyle, background: '#4caf50' }}
+            >
+              Применить новый пароль
+            </button>
+            <button onClick={handleReject} style={{ ...actionButtonStyle, background: '#f44336' }}>
+              Отклонить заявку
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
