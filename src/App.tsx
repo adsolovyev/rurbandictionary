@@ -23,6 +23,7 @@ import Alphabet from './pages/Alphabet';
 import NonCyrillicBrowse from './pages/NonCyrillicBrowse';
 import UserDefinitions from './pages/UserDefinitions';
 import { useSuggestionsStore } from './stores/suggestionsStore';
+import RequestPasswordReset from './pages/RequestPasswordReset';
 import Help from './pages/Help';
 
 function App() {
@@ -79,6 +80,7 @@ useEffect(() => {
               <Route path="/admin/pending" element={<ProtectedRoute requireAdmin><AdminPending /></ProtectedRoute>} />
               <Route path="/admin/reports" element={<ProtectedRoute requireAdmin><AdminReports /></ProtectedRoute>} />
               <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
+              <Route path="/reset-password" element={<RequestPasswordReset />} />
             </Routes>
           </div>
         </main>
