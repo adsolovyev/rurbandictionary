@@ -147,7 +147,7 @@ export default function RequestPasswordReset() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              placeholder="На какие определения вы ставили голоса или писали жалобы? Когда это было? Определения, не прошедшие модерацию тоже подойдут!"
+              placeholder="На какие определения вы ставили голоса или писали жалобы? Когда это было? Определения, не прошедшие модерацию, тоже подойдут!"
               maxLength={500}
               style={{
                 width: '100%',

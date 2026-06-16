@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { API_BASE } from '../services/api';
@@ -17,6 +17,12 @@ interface ResetRequest {
   matchedUserId: number | null;
 }
 
+interface User {
+  id: number;
+  login: string;
+  email: string;
+}
+
 export default function AdminResetRequests() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
@@ -27,7 +33,16 @@ export default function AdminResetRequests() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentRequest = requests[currentIndex];
 
-  // Загрузка данных
+  // Состояния для поиска пользователей
+  const [searchTerm, setSearchTerm] = useState('');
+  const [users, setUsers] = useState<User[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const isMounted = useRef(true);
+
+  // ---- ЗАГРУЗКА ЗАЯВОК ----
   useEffect(() => {
     if (!user?.isAdmin) {
       navigate('/');
@@ -41,7 +56,6 @@ export default function AdminResetRequests() {
         const data = await res.json();
         if (mounted) {
           setRequests(data);
-          // Установим индекс из URL после загрузки
           const params = new URLSearchParams(location.search);
           const idx = parseInt(params.get('index') || '0', 10);
           if (!isNaN(idx) && idx >= 0 && idx < data.length) {
@@ -61,7 +75,47 @@ export default function AdminResetRequests() {
     return () => { mounted = false; };
   }, [user, navigate, location.search]);
 
-  // Обновляем URL при смене индекса вручную (без useEffect)
+  // ---- ПОИСК ПОЛЬЗОВАТЕЛЕЙ ----
+  useEffect(() => {
+    if (searchTerm.length < 2) {
+      // Не сбрасываем users, просто не делаем запрос
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      if (abortControllerRef.current) abortControllerRef.current.abort();
+      abortControllerRef.current = new AbortController();
+
+      setSearchLoading(true);
+      fetch(`${API_BASE}/admin/users/search?q=${encodeURIComponent(searchTerm)}`, {
+        credentials: 'include',
+        signal: abortControllerRef.current.signal,
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (isMounted.current) setUsers(data);
+        })
+        .catch(err => {
+          if (err.name !== 'AbortError' && isMounted.current) console.error(err);
+        })
+        .finally(() => {
+          if (isMounted.current) setSearchLoading(false);
+        });
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // ---- ЖИЗНЕННЫЙ ЦИКЛ (отписка) ----
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+      if (abortControllerRef.current) abortControllerRef.current.abort();
+    };
+  }, []);
+
+  // ---- РУЧНОЕ ОБНОВЛЕНИЕ URL ----
   const updateIndex = (newIndex: number) => {
     if (newIndex < 0 || newIndex >= requests.length) return;
     setCurrentIndex(newIndex);
@@ -82,7 +136,6 @@ export default function AdminResetRequests() {
     setRequests(newRequests);
     if (newRequests.length === 0) {
       setCurrentIndex(0);
-      // очистим параметр index в URL
       const params = new URLSearchParams(location.search);
       params.delete('index');
       navigate({ search: params.toString() }, { replace: true });
@@ -92,16 +145,35 @@ export default function AdminResetRequests() {
     }
   };
 
-  const handleApply = async () => {
+  // ---- ПРИМЕНЕНИЕ ПАРОЛЯ ----
+  const handleApplyPassword = async (userId: number) => {
     if (!currentRequest) return;
+    if (!newPassword) {
+      setMessage({ text: 'Введите новый пароль', type: 'error' });
+      setTimeout(() => setMessage(null), 3000);
+      return;
+    }
     try {
-      const res = await fetch(`${API_BASE}/admin/reset-requests/${currentRequest.id}/apply`, {
+      const resetRes = await fetch(`${API_BASE}/admin/users/${userId}/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newPassword }),
+        credentials: 'include',
+      });
+      if (!resetRes.ok) throw new Error('Failed to reset password');
+
+      const closeRes = await fetch(`${API_BASE}/admin/reset-requests/${currentRequest.id}/apply`, {
         method: 'POST',
         credentials: 'include',
       });
-      if (!res.ok) throw new Error('Apply failed');
-      setMessage({ text: `Пароль применён для заявки #${currentRequest.id}`, type: 'success' });
+      if (!closeRes.ok) throw new Error('Failed to close request');
+
+      setMessage({ text: `Пароль применён для пользователя, заявка #${currentRequest.id} закрыта`, type: 'success' });
       setTimeout(() => setMessage(null), 3000);
+      setSelectedUserId(null);
+      setNewPassword('');
+      setSearchTerm('');
+      setUsers([]);
       removeCurrentAndMove();
     } catch (err) {
       setMessage({ text: 'Ошибка применения пароля', type: 'error' });
@@ -110,6 +182,7 @@ export default function AdminResetRequests() {
     }
   };
 
+  // ---- ОТКЛОНЕНИЕ ЗАЯВКИ ----
   const handleReject = async () => {
     if (!currentRequest) return;
     try {
@@ -128,6 +201,7 @@ export default function AdminResetRequests() {
     }
   };
 
+  // ---- РЕНДЕРИНГ ----
   if (loading) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
   if (!currentRequest && requests.length === 0) {
     return <div style={{ color: 'var(--text-color)', padding: '20px' }}>Нет активных заявок на смену пароля.</div>;
@@ -136,9 +210,11 @@ export default function AdminResetRequests() {
 
   const total = requests.length;
   const currentNumber = currentIndex + 1;
+  const showResults = searchTerm.length >= 2 && !searchLoading && users.length > 0;
+  const showNoResults = searchTerm.length >= 2 && !searchLoading && users.length === 0;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1 style={{ color: 'var(--text-color)' }}>Заявки на смену пароля</h1>
         <div>
@@ -150,7 +226,8 @@ export default function AdminResetRequests() {
 
       {message && <div style={messageStyle(message.type)}>{message.text}</div>}
 
-      <div style={{ background: 'var(--bg-card)', borderRadius: '8px', padding: '20px', border: '1px solid var(--border-color)' }}>
+      {/* Карточка заявки */}
+      <div style={{ background: 'var(--bg-card)', borderRadius: '8px', padding: '20px', border: '1px solid var(--border-color)', marginBottom: '24px' }}>
         <div style={{ marginBottom: '12px' }}>
           <strong style={{ color: 'var(--text-color)' }}>Заявка #{currentRequest.id}</strong>
           <span style={{ color: 'var(--blockquote-color)', marginLeft: '12px' }}>от {new Date(currentRequest.created_at).toLocaleString()}</span>
@@ -185,13 +262,75 @@ export default function AdminResetRequests() {
             {currentRequest.notes || '(не указана)'}
           </p>
         </div>
+      </div>
 
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <button onClick={handleApply} style={{ ...actionButtonStyle, background: '#4caf50' }}>
+      {/* Поиск пользователей */}
+      <div style={{ background: 'var(--bg-card)', borderRadius: '8px', padding: '20px', border: '1px solid var(--border-color)' }}>
+        <h3 style={{ color: 'var(--text-color)', marginBottom: '12px' }}>Поиск пользователя для смены пароля</h3>
+        <input
+          type="text"
+          placeholder="Почта или имя пользователя"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            backgroundColor: 'var(--vote-bg)',
+            border: '1px solid var(--border-color)',
+            color: 'var(--text-color)',
+            borderRadius: '4px',
+            marginBottom: '12px',
+          }}
+        />
+        {searchLoading && <div style={{ color: 'var(--text-color)' }}>Поиск...</div>}
+
+        {showResults && (
+          <div style={{ background: 'var(--vote-bg)', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-color)', marginBottom: '12px' }}>
+            {users.map(u => (
+              <div key={u.id} style={{ padding: '12px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                <div>
+                  <strong style={{ color: 'var(--text-color)' }}>{u.login}</strong><br />
+                  <span style={{ color: 'var(--blockquote-color)', fontSize: '0.8rem' }}>{u.email}</span>
+                </div>
+                <div>
+                  {selectedUserId === u.id ? (
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <input
+                        type="text"
+                        placeholder="Новый пароль"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        style={{ padding: '4px', borderRadius: '4px', border: 'none' }}
+                      />
+                      <button onClick={() => handleApplyPassword(u.id)} style={{ background: '#4caf50', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', color: '#fff' }}>Применить</button>
+                      <button onClick={() => { setSelectedUserId(null); setNewPassword(''); }} style={{ background: '#f44336', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', color: '#fff' }}>Отмена</button>
+                    </div>
+                  ) : (
+                    <button onClick={() => setSelectedUserId(u.id)} style={{ background: '#ff9800', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', color: '#fff' }}>Выбрать</button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {showNoResults && <div style={{ color: 'var(--blockquote-color)', marginBottom: '12px' }}>Пользователь не найден.</div>}
+
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '12px' }}>
+          <button
+            onClick={() => {
+              if (selectedUserId === null) {
+                setMessage({ text: 'Сначала выберите пользователя', type: 'error' });
+                setTimeout(() => setMessage(null), 3000);
+                return;
+              }
+              handleApplyPassword(selectedUserId);
+            }}
+            style={{ ...actionButtonStyle, background: '#4caf50' }}
+          >
             Применить новый пароль
           </button>
           <button onClick={handleReject} style={{ ...actionButtonStyle, background: '#f44336' }}>
-            Отклонить
+            Отклонить заявку
           </button>
           <button onClick={() => navigate('/admin')} style={{ ...actionButtonStyle, background: '#6c757d' }}>
             Вернуться в дашборд
