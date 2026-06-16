@@ -30,10 +30,6 @@ export default function RequestPasswordReset() {
       setError('Email не может быть длиннее 100 символов');
       return;
     }
-    if (password.length < 6) {
-      setError('Пароль должен содержать минимум 6 символов');
-      return;
-    }
     if (notes.length > 500) {
       setError('Поле "последние взаимодействия" не может быть длиннее 500 символов');
       return;
@@ -138,14 +134,14 @@ export default function RequestPasswordReset() {
           </div>
 
           <p style={{ color: 'var(--text-color)', opacity: 0.8, marginBottom: '8px' }}>
-            Укажите информацию о своих последних взаимодействиях: на какие определения вы ставили голоса или писали жалобы?
+            Дополнительная информация: укажите свои последние взаимодействия с системой, о которых знаете только вы, если помните. 
           </p>
           <div style={{ marginBottom: '24px' }}>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              placeholder="Ваши последние взаимодействия"
+              placeholder="На какие определения вы ставили голоса или писали жалобы? Когда это было? Определения, не прошедшие модерацию тоже подойдут!"
               maxLength={500}
               style={{
                 width: '100%',
@@ -246,7 +242,7 @@ export default function RequestPasswordReset() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 style={{ color: 'var(--text-color)', marginBottom: '16px' }}>✅ Запрос отправлен</h2>
+            <h2 style={{ color: 'var(--text-color)', marginBottom: '16px' }}>Запрос отправлен</h2>
             <p style={{ color: 'var(--text-color)', opacity: 0.9, marginBottom: '24px' }}>
               Вы успешно запросили смену пароля! Когда модератор удостоверится в корректности ваших данных, вы сможете войти в систему под новым паролем!
             </p>
