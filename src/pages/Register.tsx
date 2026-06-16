@@ -29,23 +29,26 @@ export default function Register() {
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '16px' }}>
             <label style={{ color: 'var(--text-color)', display: 'block', marginBottom: '8px' }}>Имя пользователя</label>
-            <div style={{ fontSize: '0.75rem', color: 'var(--blockquote-color)', marginTop: '4px' }}>
-              Будет видно другим пользователям.
-            </div>
             <input type="text" value={login} onChange={(e) => setLogin(e.target.value)} required style={{ width: '100%', padding: '10px', backgroundColor: 'var(--vote-bg)', border: '1px solid var(--border-color)', color: 'var(--text-color)', borderRadius: '8px', fontSize: '1rem' }} />
+            <div style={{ fontSize: '0.75rem', color: 'var(--blockquote-color)', marginTop: '4px' }}>
+              так вас будут видеть другие
+            </div>
           </div>
 
           <div style={{ marginBottom: '16px' }}>
             <label style={{ color: 'var(--text-color)', display: 'block', marginBottom: '8px' }}>Почта</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: '10px', backgroundColor: 'var(--vote-bg)', border: '1px solid var(--border-color)', color: 'var(--text-color)', borderRadius: '8px', fontSize: '1rem' }} />
             <div style={{ fontSize: '0.75rem', color: 'var(--blockquote-color)', marginTop: '4px' }}>
-              Нужна для восстановления учётной записи. Никаких рассылок!
+              нужна для восстановления учётной записи, никаких рассылок!
             </div>
           </div>
 
           <div style={{ marginBottom: '20px' }}>
             <label style={{ color: 'var(--text-color)', display: 'block', marginBottom: '8px' }}>Пароль</label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%', padding: '10px', backgroundColor: 'var(--vote-bg)', border: '1px solid var(--border-color)', color: 'var(--text-color)', borderRadius: '8px', fontSize: '1rem' }} />
+            <div style={{ fontSize: '0.75rem', color: 'var(--blockquote-color)', marginTop: '4px' }}>
+              любой, лишь бы запомнили
+            </div>
           </div>
 
           {error && <div style={{ color: '#f44336', marginBottom: '16px', fontSize: '0.9rem' }}>{error}</div>}
