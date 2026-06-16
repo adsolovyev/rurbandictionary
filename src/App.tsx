@@ -24,6 +24,7 @@ import NonCyrillicBrowse from './pages/NonCyrillicBrowse';
 import UserDefinitions from './pages/UserDefinitions';
 import { useSuggestionsStore } from './stores/suggestionsStore';
 import RequestPasswordReset from './pages/RequestPasswordReset';
+import AdminResetRequests from './pages/AdminResetRequests';
 import Help from './pages/Help';
 
 function App() {
@@ -80,6 +81,7 @@ useEffect(() => {
               <Route path="/admin/pending" element={<ProtectedRoute requireAdmin><AdminPending /></ProtectedRoute>} />
               <Route path="/admin/reports" element={<ProtectedRoute requireAdmin><AdminReports /></ProtectedRoute>} />
               <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
+              <Route path="/admin/reset-requests" element={<AdminResetRequests />} />
               <Route path="/reset-password" element={<RequestPasswordReset />} />
             </Routes>
           </div>

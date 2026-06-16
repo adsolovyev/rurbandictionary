@@ -20,7 +20,7 @@ interface ReportItem {
 
 export default function AdminDashboard() {
   const { user } = useAuthStore();
-  const [stats, setStats] = useState({ pendingDefinitions: 0, pendingReports: 0 });
+  const [stats, setStats] = useState({ pendingDefinitions: 0, pendingReports: 0, pendingResets: 0 });
   const [loading, setLoading] = useState(true);
   const [recentPending, setRecentPending] = useState<PendingItem[]>([]);
   const [recentReports, setRecentReports] = useState<ReportItem[]>([]);
@@ -134,67 +134,66 @@ export default function AdminDashboard() {
           )}
         </div>
 
-{/* Правая колонка – управление пользователями */}
-<div style={{ flex: 1, minWidth: '300px' }}>
-  <div style={{ background: 'var(--bg-card)', borderRadius: '8px', padding: '16px', marginBottom: '20px', border: '1px solid var(--border-color)' }}>
-    <Link to="/admin/users" style={{ textDecoration: 'none', color: 'var(--text-color)' }}>
-      <h2 style={{ color: 'var(--text-color)' }}>Пользователи</h2>
-    </Link>
-    <p style={{ color: 'var(--text-color)' }}>Смена пароля пользователя</p>
-  </div>
+        {/* Правая колонка – смена пароля пользователей */}
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <div style={{ background: 'var(--bg-card)', borderRadius: '8px', padding: '16px', marginBottom: '20px', border: '1px solid var(--border-color)' }}>
+            <Link to="/admin/reset-requests" style={{ textDecoration: 'none', color: 'var(--text-color)' }}>
+              <h2 style={{ color: 'var(--text-color)' }}>Смена пароля пользователей</h2>
+            </Link>
+            <p style={{ color: 'var(--text-color)' }}>Ожидают: {stats.pendingResets}</p>
+          </div>
 
-  <div style={{
-    backgroundColor: 'var(--contrast-bg)',
-    borderRadius: '8px',
-    padding: '16px',
-    textAlign: 'center',
-    marginTop: '20px',
-    border: '1px solid var(--border-color)',
-  }}>
-    <img
-      src="images/i.svg"
-      alt="Котик"
-      style={{
-        maxWidth: '140px',
-        width: '100%',
-        height: 'auto',
-        display: 'block',
-        margin: '0 auto',
-      }}
-    />
-  </div>
-</div>
-<div style={{
-  backgroundColor: 'var(--contrast-bg)',
-  borderRadius: '8px',
-  padding: '16px',
-  textAlign: 'center',
-  marginTop: '20px',
-  border: '1px solid var(--border-color)',
-}}>
-  <a
-    href="https://dashboard.simpleanalytics.com/?utm_source=rude-lv1t.onrender.com&utm_content=badge&affiliate=hapef"
-    referrerPolicy="origin"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <picture>
-      <source
-        srcSet="https://simpleanalyticsbadges.com/rude-lv1t.onrender.com?mode=dark"
-        media="(prefers-color-scheme: dark)"
-      />
-      <img
-        src="https://simpleanalyticsbadges.com/rude-lv1t.onrender.com?mode=light"
-        loading="lazy"
-        referrerPolicy="no-referrer"
-        crossOrigin="anonymous"
-        alt="Simple Analytics"
-        style={{ maxWidth: '100%', height: 'auto' }}
-      />
-    </picture>
-  </a>
-</div>
-        
+          <div style={{
+            backgroundColor: 'var(--contrast-bg)',
+            borderRadius: '8px',
+            padding: '16px',
+            textAlign: 'center',
+            marginTop: '20px',
+            border: '1px solid var(--border-color)',
+          }}>
+            <img
+              src="images/i.svg"
+              alt="Котик"
+              style={{
+                maxWidth: '140px',
+                width: '100%',
+                height: 'auto',
+                display: 'block',
+                margin: '0 auto',
+              }}
+            />
+          </div>
+          <div style={{
+            backgroundColor: 'var(--contrast-bg)',
+            borderRadius: '8px',
+            padding: '16px',
+            textAlign: 'center',
+            marginTop: '20px',
+            border: '1px solid var(--border-color)',
+          }}>
+            <a
+              href="https://dashboard.simpleanalytics.com/?utm_source=rude-lv1t.onrender.com&utm_content=badge&affiliate=hapef"
+              referrerPolicy="origin"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <picture>
+                <source
+                  srcSet="https://simpleanalyticsbadges.com/rude-lv1t.onrender.com?mode=dark"
+                  media="(prefers-color-scheme: dark)"
+                />
+                <img
+                  src="https://simpleanalyticsbadges.com/rude-lv1t.onrender.com?mode=light"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                  crossOrigin="anonymous"
+                  alt="Simple Analytics"
+                  style={{ maxWidth: '100%', height: 'auto' }}
+                />
+              </picture>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );

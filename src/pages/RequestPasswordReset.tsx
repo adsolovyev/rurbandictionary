@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useThemeStore } from '../stores/themeStore';
+import { API_BASE } from '../services/api';
 
 export default function RequestPasswordReset() {
   const navigate = useNavigate();
@@ -37,10 +38,15 @@ export default function RequestPasswordReset() {
 
     setLoading(true);
     try {
-      // TODO: заменить на реальный API вызов
-      // await requestPasswordReset({ login, email, password, notes });
-      console.log('Отправка запроса:', { login, email, password, notes });
-      // Имитация успешного ответа
+      const response = await fetch(`${API_BASE}/auth/request-password-reset`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login, email, password, notes }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Ошибка отправки');
+      }
       setShowModal(true);
     } catch (err) {
       setError('Ошибка при отправке запроса. Попробуйте позже.');
