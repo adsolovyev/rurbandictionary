@@ -44,7 +44,7 @@ export default function Login() {
           <button type="submit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', width: '100%', padding: '10px 16px', background: 'var(--link-color)', color: '#fff', border: 'none', borderRadius: '40px', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold', transition: 'background 0.2s' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3a8fcc')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--link-color)')}>Войти</button>
         </form>
         <p style={{ marginTop: '20px', textAlign: 'center', color: 'var(--text-color)' }}>Нет учетной записи? <a href="/register" style={{ color: 'var(--link-color)' }}>Зарегистрироваться</a></p>
-        {attempts >= 2 && <div style={{ marginTop: '16px', color: '#ffaa00', fontSize: '0.85rem', textAlign: 'center' }}>Забыли пароль? Для смены пароля обратитесь к администратору.</div>}
+        {attempts >= 2 && <div style={{ marginTop: '16px', color: '#ffaa00', fontSize: '0.85rem', textAlign: 'center' }}>Забыли пароль? <a href="/reset-password" style={{ color: 'var(--link-color)' }}>Поменять.</a></div>}
       </div>
     </div>
   );

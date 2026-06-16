@@ -12,45 +12,89 @@ const allSymbols = [...russianAlphabet, '#'];
 export default function FullMenu({ onClose }: FullMenuProps) {
   const { user, logout } = useAuthStore();
   const handleLinkClick = () => onClose();
-const handleLogout = async () => {
-  await logout();
-  onClose();
-  window.location.reload();
-};
+  const handleLogout = async () => {
+    await logout();
+    onClose();
+    window.location.reload();
+  };
   const { dyslexicFont, toggleDyslexicFont } = useSettingsStore();
+
+  const itemStyle = {
+    display: 'block',
+    marginBottom: '1rem',
+    fontSize: '1.2rem',
+    textDecoration: 'none',
+    color: '#ffffff',
+    padding: '4px 8px',
+    borderRadius: '4px',
+    transition: 'background-color 0.2s',
+    cursor: 'pointer',
+    background: 'none',
+    border: 'none',
+    width: '100%',
+    textAlign: 'left' as const,
+  };
 
   return (
     <div style={{ borderTop: '1px solid #2a2f3a', borderBottom: '1px solid #2a2f3a', padding: '1.5rem', marginBottom: '1rem', backgroundColor: '#212936' }}>
       <div className="container" style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
         <div style={{ flex: '1', minWidth: '150px' }}>
-          <Link to="/" onClick={handleLinkClick} style={{ display: 'block', marginBottom: '1rem', fontSize: '1.2rem', textDecoration: 'none', color: '#ffffff' }}>
+          <Link
+            to="/"
+            onClick={handleLinkClick}
+            style={itemStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#383F4A')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+          >
             Главная
           </Link>
-          <Link to="/add" onClick={handleLinkClick} style={{ display: 'block', marginBottom: '1rem', fontSize: '1.2rem', textDecoration: 'none', color: '#ffffff' }}>
+          <Link
+            to="/add"
+            onClick={handleLinkClick}
+            style={itemStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#383F4A')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+          >
             Добавить определение
           </Link>
           {user?.isAdmin && (
-            <Link to="/admin" onClick={handleLinkClick} style={{ display: 'block', marginBottom: '1rem', fontSize: '1.2rem', textDecoration: 'none', color: '#ffaa00' }}>
+            <Link
+              to="/admin"
+              onClick={handleLinkClick}
+              style={{ ...itemStyle, color: '#ffaa00' }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#383F4A')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+            >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256" style={{ marginRight: '8px', verticalAlign: 'middle' }}>
                 <path d="M243.32,116.69l-16-16a16,16,0,0,0-20.84-1.53L156.84,49.52a16,16,0,0,0-1.52-20.84l-16-16a16,16,0,0,0-22.63,0l-64,64a16,16,0,0,0,0,22.63l16,16a16,16,0,0,0,20.83,1.52L96.69,124,31.31,189.38A25,25,0,0,0,66.63,224.7L132,159.32l7.17,7.16a16,16,0,0,0,1.52,20.84l16,16a16,16,0,0,0,22.63,0l64-64A16,16,0,0,0,243.32,116.69ZM80,104,64,88l64-64,16,16ZM55.32,213.38a9,9,0,0,1-12.69,0,9,9,0,0,1,0-12.68L108,135.32,120.69,148ZM101,105.66,145.66,61,195,110.34,150.35,155ZM168,192l-16-16,4-4h0l56-56h0l4-4,16,16Z" />
               </svg>
               Админка
             </Link>
           )}
-          <Link to="/help" onClick={handleLinkClick} style={{ display: 'block', marginBottom: '1rem', fontSize: '1.2rem', textDecoration: 'none', color: '#ffffff' }}>
+          <Link
+            to="/help"
+            onClick={handleLinkClick}
+            style={itemStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#383F4A')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+          >
             Помощь
           </Link>
           <hr style={{ margin: '12px 0', borderColor: '#ffffff1a' }} />
           <button
             onClick={toggleDyslexicFont}
-            style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#ffffff', padding: 0, marginBottom: '1rem', display: 'block' }}
+            style={itemStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#383F4A')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
           >
             {dyslexicFont ? 'Сменить шрифт на Roboto' : 'Сменить шрифт на OpenDyslexic'}
           </button>
           {user && (
             <button
               onClick={handleLogout}
-              style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#ffffff', padding: 0, marginBottom: '1rem', display: 'block' }}
+              style={itemStyle}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#383F4A')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
             >
               Выйти
             </button>
@@ -85,7 +129,10 @@ const handleLogout = async () => {
                     textDecoration: 'none',
                     color: '#ffffff',
                     gridColumn: isHash ? 'span 2' : 'auto',
+                    transition: 'background-color 0.2s',
                   }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#4a5260')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#373e4a')}
                 >
                   {symbol}
                 </Link>
