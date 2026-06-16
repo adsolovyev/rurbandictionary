@@ -65,8 +65,7 @@ export default function AddDefinition() {
           Новое слово
         </h1>
         <p style={{ color: 'var(--text-color)', opacity: 0.8, marginBottom: '24px' }}>
-          Все слова на Russian Urban Dictionary Educational были добавлены простыми людьми, такими же как Вы. Добавьте и Вы!<br />
-          Не забывайте, добавленные слова должны обладать смыслом для других людей и не должны быть оскорбительны.
+          Добавьте слово, которое вы используете в речи. Опишите его так, чтобы было понятно всем.
         </p>
 
         <form onSubmit={handleSubmit}>
@@ -91,7 +90,6 @@ export default function AddDefinition() {
 
           <div style={{ marginBottom: '20px' }}>
             <p style={{ color: 'var(--text-color)', opacity: 0.8, marginBottom: '8px' }}>
-              Пишите для большой аудитории. Много людей прочтут это, поэтому добавьте побольше дополнительного описания.<br />
               Не указывайте личную информацию.
             </p>
             <textarea
