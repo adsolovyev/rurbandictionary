@@ -72,7 +72,7 @@ export default function SearchResults() {
   if (!word) return <div style={{ color: 'var(--text-color)' }}>Введите слово для поиска</div>;
   if (loadingInitial) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
   if (definitions.length === 0)
-    return <div style={{ color: 'var(--text-color)' }}>Определений для "{word}" не найдено.</div>;
+    return <div style={{ color: 'var(--text-color)' }}>Определений для "{word}" еще нет, но вы можете это исправить.</div>;
 
   const displayedDefs = definitions.slice(0, visibleCount);
   const showLoadMore = hasMore || visibleCount < definitions.length;
