@@ -26,6 +26,7 @@ import { useSuggestionsStore } from './stores/suggestionsStore';
 import RequestPasswordReset from './pages/RequestPasswordReset';
 import AdminResetRequests from './pages/AdminResetRequests';
 import Help from './pages/Help';
+import NotFound from './pages/NotFound';
 
 function App() {
   const fetchMe = useAuthStore(state => state.fetchMe);
@@ -83,6 +84,7 @@ useEffect(() => {
               <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
               <Route path="/admin/reset-requests" element={<AdminResetRequests />} />
               <Route path="/reset-password" element={<RequestPasswordReset />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
         </main>
