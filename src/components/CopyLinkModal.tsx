@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
-// @ts-expect-error - нет типов для color4bg
-import { AestheticFluidBg } from 'color4bg';
 
 interface CopyLinkModalProps {
   onClose: () => void;
@@ -15,7 +13,6 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
   const [linkCopied, setLinkCopied] = useState(false);
   const [imageCopied, setImageCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const bgContainerRef = useRef<HTMLDivElement>(null);
 
   // Закрытие по Esc
   useEffect(() => {
@@ -26,25 +23,12 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
     return () => document.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
-  // Генерация фона через Color4Bg
-  useEffect(() => {
-    if (!bgContainerRef.current) return;
+  const getRandomColor = () =>
+    `#${Math.floor(Math.random() * 16777215)
+      .toString(16)
+      .padStart(6, '0')}`;
 
-    const randomColor = () =>
-      `#${Math.floor(Math.random() * 16777215)
-        .toString(16)
-        .padStart(6, '0')}`;
-
-    const bg = new AestheticFluidBg({
-      dom: bgContainerRef.current,
-      colors: [randomColor(), randomColor(), randomColor()],
-      speed: 0.5,
-      blur: 0.3,
-    });
-    bg.start();
-
-    return () => bg.destroy();
-  }, []);
+  const [bgColors] = useState(() => [getRandomColor(), getRandomColor()]);
 
   const handleCopyLink = async () => {
     try {
@@ -56,40 +40,34 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
     }
   };
 
- const handleCopyImage = async () => {
-  if (!cardRef.current) return;
-  try {
-    // Небольшая задержка
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    const canvas = await html2canvas(cardRef.current, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: null,
-      ignoreElements: (el) => el === bgContainerRef.current,
-      logging: false, // может помочь
-    });
-    const imageDataUrl = canvas.toDataURL('image/png');
-    const blob = await fetch(imageDataUrl).then((res) => res.blob());
-    await navigator.clipboard.write([
-      new ClipboardItem({
-        [blob.type]: blob,
-      }),
-    ]);
-    setImageCopied(true);
-    setTimeout(() => setImageCopied(false), 2000);
-  } catch (err) {
-    console.error(err);
-    // fallback
-    const canvas = await html2canvas(cardRef.current, { scale: 2, useCORS: true });
-    const link = document.createElement('a');
-    link.download = `definition-${word}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    setImageCopied(true);
-    setTimeout(() => setImageCopied(false), 2000);
-  }
-};
+  const handleCopyImage = async () => {
+    if (!cardRef.current) return;
+    try {
+      const canvas = await html2canvas(cardRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+      });
+      const imageDataUrl = canvas.toDataURL('image/png');
+      const blob = await fetch(imageDataUrl).then((res) => res.blob());
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob,
+        }),
+      ]);
+      setImageCopied(true);
+      setTimeout(() => setImageCopied(false), 2000);
+    } catch (err) {
+      console.error(err);
+      const canvas = await html2canvas(cardRef.current, { scale: 2, useCORS: true });
+      const link = document.createElement('a');
+      link.download = `definition-${word}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      setImageCopied(true);
+      setTimeout(() => setImageCopied(false), 2000);
+    }
+  };
 
   const shareText = `*${word}*\n${definition}${example ? `\n_Пример: ${example}_` : ''}\n\nПодробнее: ${url}`;
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
@@ -201,20 +179,9 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
               margin: '0 auto 12px',
               position: 'relative',
               overflow: 'hidden',
+              background: `linear-gradient(135deg, ${bgColors[0]}, ${bgColors[1]})`,
             }}
           >
-            {/* Контейнер для фона Color4Bg */}
-            <div
-              ref={bgContainerRef}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                zIndex: 0,
-              }}
-            />
             {/* Белая карточка поверх фона */}
             <div
               style={{
