@@ -29,6 +29,9 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
 
   const [bgColors] = useState(() => [getRandomColor(), getRandomColor()]);
 
+  // Шайни-версия — 1% шанс
+  const [isShiny] = useState(() => Math.random() < 0.1);
+
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(url);
@@ -39,62 +42,66 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
     }
   };
 
-const handleCopyImage = async () => {
-  if (!cardRef.current) return;
-  try {
-    const el = cardRef.current;
-
-    // Сохраняем оригинальные стили
-    const originalBorderRadius = el.style.borderRadius;
-
-    // Убираем скругление на время захвата
-    el.style.borderRadius = '0';
-
-    const blob = await domtoimage.toBlob(el, {
-      width: 500,
-      height: 500,
-      style: {
-        transform: 'scale(1)',
-        borderRadius: '0',
-        padding: '0',
-        margin: '0',
-      },
-    });
-
-    // Возвращаем стили
-    el.style.borderRadius = originalBorderRadius;
-
-    if (!blob) throw new Error('Failed to generate image');
-
-    await navigator.clipboard.write([
-      new ClipboardItem({
-        [blob.type]: blob,
-      }),
-    ]);
-    setImageCopied(true);
-    setTimeout(() => setImageCopied(false), 2000);
-  } catch (err) {
-    console.error(err);
-    // fallback
+  const handleCopyImage = async () => {
+    if (!cardRef.current) return;
     try {
-      const blob = await domtoimage.toBlob(cardRef.current, { width: 500, height: 500 });
-      if (blob) {
-        const link = document.createElement('a');
-        link.download = `definition-${word}.png`;
-        link.href = URL.createObjectURL(blob);
-        link.click();
-        setImageCopied(true);
-        setTimeout(() => setImageCopied(false), 2000);
+      const el = cardRef.current;
+      const originalBorderRadius = el.style.borderRadius;
+      el.style.borderRadius = '0';
+
+      const blob = await domtoimage.toBlob(el, {
+        width: 500,
+        height: 500,
+        style: {
+          transform: 'scale(1)',
+          borderRadius: '0',
+          padding: '0',
+          margin: '0',
+        },
+      });
+
+      el.style.borderRadius = originalBorderRadius;
+
+      if (!blob) throw new Error('Failed to generate image');
+
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob,
+        }),
+      ]);
+      setImageCopied(true);
+      setTimeout(() => setImageCopied(false), 2000);
+    } catch (err) {
+      console.error(err);
+      try {
+        const blob = await domtoimage.toBlob(cardRef.current, { width: 500, height: 500 });
+        if (blob) {
+          const link = document.createElement('a');
+          link.download = `definition-${word}.png`;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          setImageCopied(true);
+          setTimeout(() => setImageCopied(false), 2000);
+        }
+      } catch (e) {
+        console.error(e);
+        alert('Не удалось скопировать изображение');
       }
-    } catch (e) {
-      console.error(e);
-      alert('Не удалось скопировать изображение');
     }
-  }
-};
+  };
 
   const shareText = `${word}\n${definition}${example ? `\nПример: ${example}` : ''}`;
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
+
+  // Шайни-стили
+  const backgroundStyle = isShiny
+    ? 'linear-gradient(135deg, #FFD700, #FFA500, #FF8C00, #FFD700)'
+    : `linear-gradient(135deg, ${bgColors[0]}, ${bgColors[1]})`;
+
+  const cardBorder = isShiny ? '3px solid #FFD700' : 'none';
+  const cardBoxShadow = isShiny
+    ? '0 0 30px rgba(255,215,0,0.6), 8px 8px 20px rgba(0,0,0,0.2)'
+    : '8px 8px 20px rgba(0,0,0,0.2)';
 
   return (
     <div
@@ -126,7 +133,9 @@ const handleCopyImage = async () => {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 style={{ color: 'var(--text-color)', marginBottom: '16px' }}>Поделиться</h3>
+        <h3 style={{ color: 'var(--text-color)', marginBottom: '16px' }}>
+          Поделиться {isShiny && <span style={{ marginLeft: '8px' }}>✨</span>}
+        </h3>
 
         <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center' }}>
           <input
@@ -212,7 +221,7 @@ const handleCopyImage = async () => {
               margin: '0 auto 12px',
               position: 'relative',
               overflow: 'hidden',
-              background: `linear-gradient(135deg, ${bgColors[0]}, ${bgColors[1]})`,
+              background: backgroundStyle,
             }}
           >
             <div
@@ -227,7 +236,8 @@ const handleCopyImage = async () => {
                 maxWidth: '85%',
                 backgroundColor: '#ffffff',
                 borderRadius: '12px',
-                boxShadow: '8px 8px 20px rgba(0,0,0,0.2)',
+                border: cardBorder,
+                boxShadow: cardBoxShadow,
                 padding: '16px 20px',
                 display: 'flex',
                 flexDirection: 'column',
@@ -245,9 +255,13 @@ const handleCopyImage = async () => {
                   marginBottom: '6px',
                   wordBreak: 'break-word',
                   lineHeight: 1.2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
                 }}
               >
                 {word}
+                {isShiny && <span style={{ fontSize: '24px' }}>✨</span>}
               </div>
               <div
                 style={{
