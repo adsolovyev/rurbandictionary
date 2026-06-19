@@ -299,7 +299,14 @@ export default function Card({
           </div>
         </div>
       </div>
-      {showModal && <CopyLinkModal word={word} onClose={() => setShowModal(false)} />}
+      {showModal && (
+  <CopyLinkModal
+    onClose={() => setShowModal(false)}
+    url={window.location.href}
+    word={word}
+    definition={definition}
+  />
+)}
     </>
   );
 }
