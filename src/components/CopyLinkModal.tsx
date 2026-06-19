@@ -149,7 +149,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
           border: '3px solid #000000',
           boxShadow: '0 0 30px rgba(0,0,0,0.3), 8px 8px 20px rgba(0,0,0,0.2)',
           icon: '🌀',
-          label: 'Инверсная карточка!',
+          label: 'Инверсированная карточка!',
         };
       default:
         return {
