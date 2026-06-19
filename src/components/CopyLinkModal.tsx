@@ -39,45 +39,59 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
     }
   };
 
-  const handleCopyImage = async () => {
-    if (!cardRef.current) return;
-    try {
-      // dom-to-image захватывает элемент с учётом трансформаций
-      const blob = await domtoimage.toBlob(cardRef.current, {
-        width: 500,
-        height: 500,
-        style: {
-          transform: 'scale(1)',
-        },
-      });
-      if (!blob) throw new Error('Failed to generate image');
+const handleCopyImage = async () => {
+  if (!cardRef.current) return;
+  try {
+    const el = cardRef.current;
 
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          [blob.type]: blob,
-        }),
-      ]);
-      setImageCopied(true);
-      setTimeout(() => setImageCopied(false), 2000);
-    } catch (err) {
-      console.error(err);
-      // fallback — скачивание
-      try {
-        const blob = await domtoimage.toBlob(cardRef.current, { width: 500, height: 500 });
-        if (blob) {
-          const link = document.createElement('a');
-          link.download = `definition-${word}.png`;
-          link.href = URL.createObjectURL(blob);
-          link.click();
-          setImageCopied(true);
-          setTimeout(() => setImageCopied(false), 2000);
-        }
-      } catch (e) {
-        console.error(e);
-        alert('Не удалось скопировать изображение');
+    // Сохраняем оригинальные стили
+    const originalBorderRadius = el.style.borderRadius;
+
+    // Убираем скругление на время захвата
+    el.style.borderRadius = '0';
+
+    const blob = await domtoimage.toBlob(el, {
+      width: 500,
+      height: 500,
+      style: {
+        transform: 'scale(1)',
+        borderRadius: '0',
+        padding: '0',
+        margin: '0',
+      },
+    });
+
+    // Возвращаем стили
+    el.style.borderRadius = originalBorderRadius;
+
+    if (!blob) throw new Error('Failed to generate image');
+
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        [blob.type]: blob,
+      }),
+    ]);
+    setImageCopied(true);
+    setTimeout(() => setImageCopied(false), 2000);
+  } catch (err) {
+    console.error(err);
+    // fallback
+    try {
+      const blob = await domtoimage.toBlob(cardRef.current, { width: 500, height: 500 });
+      if (blob) {
+        const link = document.createElement('a');
+        link.download = `definition-${word}.png`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        setImageCopied(true);
+        setTimeout(() => setImageCopied(false), 2000);
       }
+    } catch (e) {
+      console.error(e);
+      alert('Не удалось скопировать изображение');
     }
-  };
+  }
+};
 
   const shareText = `${word}\n${definition}${example ? `\nПример: ${example}` : ''}`;
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
