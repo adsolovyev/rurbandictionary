@@ -273,18 +273,23 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
         <div style={{ marginBottom: '16px' }}>
           {/* Уведомление о редкой карточке */}
           {isShiny && (
-            <div
-              style={{
-                textAlign: 'center',
-                color: rarity === 'gold' ? '#FFD700' : rarity === 'black' ? '#C0C0C0' : '#000000',
-                fontWeight: 'bold',
-                marginBottom: '8px',
-                fontSize: '16px',
-              }}
-            >
-              {rarityStyles.icon} Вам выпала {rarityStyles.label} {rarityStyles.icon}
-            </div>
-          )}
+  <div
+    style={{
+      textAlign: 'center',
+      padding: '4px 12px',
+      backgroundColor: 'rgba(0,0,0,0.6)',
+      borderRadius: '20px',
+      display: 'inline-block',
+      margin: '0 auto 8px',
+      color: '#ffffff',
+      fontWeight: 'bold',
+      fontSize: '14px',
+      letterSpacing: '0.5px',
+    }}
+  >
+    {rarityStyles.icon} Вам выпала {rarityStyles.label} {rarityStyles.icon}
+  </div>
+)}
 
           {/* Карточка */}
           <div
