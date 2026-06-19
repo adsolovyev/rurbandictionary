@@ -305,6 +305,7 @@ export default function Card({
     url={window.location.href}
     word={word}
     definition={definition}
+    example={example}  // добавили
   />
 )}
     </>

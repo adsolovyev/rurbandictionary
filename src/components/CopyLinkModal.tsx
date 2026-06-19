@@ -6,14 +6,14 @@ interface CopyLinkModalProps {
   url: string;
   word: string;
   definition: string;
+  example?: string; // добавили
 }
 
-export default function CopyLinkModal({ onClose, url, word, definition }: CopyLinkModalProps) {
+export default function CopyLinkModal({ onClose, url, word, definition, example }: CopyLinkModalProps) {
   const [linkCopied, setLinkCopied] = useState(false);
   const [imageCopied, setImageCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Генерация случайных цветов для фона
   const getRandomColor = () => {
     const letters = '0123456789ABCDEF';
     let color = '#';
@@ -39,12 +39,11 @@ export default function CopyLinkModal({ onClose, url, word, definition }: CopyLi
     if (!cardRef.current) return;
     try {
       const canvas = await html2canvas(cardRef.current, {
-        scale: 2, // повышаем качество
+        scale: 2,
         useCORS: true,
         backgroundColor: null,
       });
       const imageDataUrl = canvas.toDataURL('image/png');
-      // Копируем в буфер обмена как изображение
       const blob = await fetch(imageDataUrl).then(res => res.blob());
       await navigator.clipboard.write([
         new ClipboardItem({
@@ -55,7 +54,14 @@ export default function CopyLinkModal({ onClose, url, word, definition }: CopyLi
       setTimeout(() => setImageCopied(false), 2000);
     } catch (err) {
       console.error(err);
-      alert('Не удалось скопировать изображение');
+      // fallback: скачать
+      const canvas = await html2canvas(cardRef.current, { scale: 2, useCORS: true });
+      const link = document.createElement('a');
+      link.download = `definition-${word}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      setImageCopied(true);
+      setTimeout(() => setImageCopied(false), 2000);
     }
   };
 
@@ -91,7 +97,6 @@ export default function CopyLinkModal({ onClose, url, word, definition }: CopyLi
       >
         <h3 style={{ color: 'var(--text-color)', marginBottom: '16px' }}>Поделиться</h3>
 
-        {/* Блок ссылки */}
         <div style={{ marginBottom: '16px' }}>
           <input
             type="text"
@@ -126,7 +131,6 @@ export default function CopyLinkModal({ onClose, url, word, definition }: CopyLi
 
         <hr style={{ borderColor: 'var(--border-color)', margin: '20px 0' }} />
 
-        {/* Блок картинки */}
         <div style={{ marginBottom: '16px' }}>
           <div
             ref={cardRef}
@@ -145,26 +149,35 @@ export default function CopyLinkModal({ onClose, url, word, definition }: CopyLi
               overflow: 'hidden',
             }}
           >
-            {/* Белая карточка 300×300 с наклоном и тенью */}
+            {/* Белая карточка — адаптивная высота, центрирование */}
             <div
               style={{
                 width: '300px',
-                height: '300px',
-                maxWidth: '80%',
-                maxHeight: '80%',
+                maxHeight: '300px',
+                minHeight: '120px', // чтобы не слишком мелко
+                maxWidth: '85%',
                 backgroundColor: '#ffffff',
                 borderRadius: '12px',
                 boxShadow: '8px 8px 20px rgba(0,0,0,0.2)',
                 transform: 'rotate(-2deg)',
-                padding: '24px',
+                padding: '16px 20px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 overflow: 'hidden',
-                textAlign: 'center',
+                textAlign: 'left', // выравнивание по левому краю
               }}
             >
-              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#4356c9', marginBottom: '12px', wordBreak: 'break-word' }}>
+              <div
+                style={{
+                  fontSize: '28px',
+                  fontWeight: 'bold',
+                  color: '#4356c9',
+                  marginBottom: '6px',
+                  wordBreak: 'break-word',
+                  lineHeight: 1.2,
+                }}
+              >
                 {word}
               </div>
               <div
@@ -181,6 +194,23 @@ export default function CopyLinkModal({ onClose, url, word, definition }: CopyLi
               >
                 {definition}
               </div>
+              {example && (
+                <div
+                  style={{
+                    fontSize: '14px',
+                    color: '#555555',
+                    fontStyle: 'italic',
+                    marginTop: '8px',
+                    overflow: 'hidden',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {example}
+                </div>
+              )}
             </div>
           </div>
 

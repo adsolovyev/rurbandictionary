@@ -61,11 +61,11 @@ export default function Home() {
   };
 
   if (loadingInitial) {
-    return <div style={{ color: '#fff' }}>Загрузка...</div>;
+    return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
   }
 
   if (definitions.length === 0 && !loadingInitial) {
-    return <div style={{ color: '#fff' }}>Нет определений</div>;
+    return <div style={{ color: 'var(--text-color)' }}>Нет определений</div>;
   }
 
   const displayedDefs = definitions.slice(0, visibleCount);
