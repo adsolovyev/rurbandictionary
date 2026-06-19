@@ -9,31 +9,50 @@ interface CopyLinkModalProps {
   example?: string;
 }
 
+type Rarity = 'common' | 'gold' | 'black' | 'invert';
+
 export default function CopyLinkModal({ onClose, url, word, definition, example }: CopyLinkModalProps) {
   const [linkCopied, setLinkCopied] = useState(false);
   const [imageCopied, setImageCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Генерация случайных цветов
   const getRandomColor = () =>
     `#${Math.floor(Math.random() * 16777215)
       .toString(16)
       .padStart(6, '0')}`;
 
-  // Генерация фона (2 цвета)
   const generateBgColors = () => [getRandomColor(), getRandomColor()];
 
-  // Шайни-статус (10%)
-  const generateShiny = () => Math.random() < 0.5;
+  // Механика первого раза: первый раз 10%, дальше 3%
+  const getInitialRarity = (): Rarity => {
+    const hasSeenShiny = localStorage.getItem('hasSeenShiny');
+    let isRare: boolean;
+    if (!hasSeenShiny) {
+      isRare = Math.random() < 0.1; // первый раз 10%
+      if (isRare) localStorage.setItem('hasSeenShiny', 'true');
+    } else {
+      isRare = Math.random() < 0.03; // дальше 3%
+    }
+    if (!isRare) return 'common';
+    const types: Rarity[] = ['gold', 'black', 'invert'];
+    return types[Math.floor(Math.random() * types.length)];
+  };
 
-  // Состояния для фона и шайни
   const [bgColors, setBgColors] = useState(() => generateBgColors());
-  const [isShiny, setIsShiny] = useState(() => generateShiny());
+  const [rarity, setRarity] = useState<Rarity>(() => getInitialRarity());
 
-  // Перегенерация (фон + шайни)
+  const isShiny = rarity !== 'common';
+
   const regenerateCard = () => {
     setBgColors(generateBgColors());
-    setIsShiny(generateShiny());
+    // При реролле используем базовый шанс (3%), без "первого раза"
+    const isRare = Math.random() < 0.03;
+    if (!isRare) {
+      setRarity('common');
+    } else {
+      const types: Rarity[] = ['gold', 'black', 'invert'];
+      setRarity(types[Math.floor(Math.random() * types.length)]);
+    }
   };
 
   useEffect(() => {
@@ -104,6 +123,48 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
 
   const shareText = `${word}\n${definition}${example ? `\nПример: ${example}` : ''}`;
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
+
+  // Стили для разных редкостей
+  const getRarityStyles = () => {
+    switch (rarity) {
+      case 'gold':
+        return {
+          background: 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700, #FF8C00)',
+          border: '3px solid #FFD700',
+          boxShadow: '0 0 30px rgba(255,215,0,0.6), 8px 8px 20px rgba(0,0,0,0.2)',
+          icon: '⭐',
+          label: 'Золотая карточка!',
+        };
+      case 'black':
+        return {
+          background: 'linear-gradient(135deg, #1a1a1a, #2d2d2d, #1a1a1a)',
+          border: '3px solid #C0C0C0',
+          boxShadow: '0 0 30px rgba(192,192,192,0.3), 8px 8px 20px rgba(0,0,0,0.5)',
+          icon: '🖤',
+          label: 'Чёрная карточка!',
+        };
+      case 'invert':
+        return {
+          background: 'linear-gradient(135deg, #ffffff, #e0e0e0, #ffffff)',
+          border: '3px solid #000000',
+          boxShadow: '0 0 30px rgba(0,0,0,0.3), 8px 8px 20px rgba(0,0,0,0.2)',
+          icon: '🌀',
+          label: 'Инверсная карточка!',
+        };
+      default:
+        return {
+          background: `linear-gradient(135deg, ${bgColors[0]}, ${bgColors[1]})`,
+          border: 'none',
+          boxShadow: '8px 8px 20px rgba(0,0,0,0.2)',
+          icon: '',
+          label: '',
+        };
+    }
+  };
+
+  const rarityStyles = getRarityStyles();
+
+  const isInvert = rarity === 'invert';
 
   return (
     <div
@@ -210,6 +271,21 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
         <hr style={{ borderColor: 'var(--border-color)', margin: '0 0 20px 0' }} />
 
         <div style={{ marginBottom: '16px' }}>
+          {/* Уведомление о редкой карточке */}
+          {isShiny && (
+            <div
+              style={{
+                textAlign: 'center',
+                color: rarity === 'gold' ? '#FFD700' : rarity === 'black' ? '#C0C0C0' : '#000000',
+                fontWeight: 'bold',
+                marginBottom: '8px',
+                fontSize: '16px',
+              }}
+            >
+              {rarityStyles.icon} Вам выпала {rarityStyles.label} {rarityStyles.icon}
+            </div>
+          )}
+
           {/* Карточка */}
           <div
             ref={cardRef}
@@ -222,9 +298,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
               margin: '0 auto 12px',
               position: 'relative',
               overflow: 'hidden',
-              background: isShiny
-                ? 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700, #FF8C00)'
-                : `linear-gradient(135deg, ${bgColors[0]}, ${bgColors[1]})`,
+              background: rarityStyles.background,
             }}
           >
             <div
@@ -237,12 +311,10 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
                 maxHeight: '300px',
                 minHeight: '120px',
                 maxWidth: '85%',
-                backgroundColor: '#ffffff',
+                backgroundColor: isInvert ? '#000000' : '#ffffff',
                 borderRadius: '12px',
-                border: isShiny ? '3px solid #FFD700' : 'none',
-                boxShadow: isShiny
-                  ? '0 0 30px rgba(255,215,0,0.6), 8px 8px 20px rgba(0,0,0,0.2)'
-                  : '8px 8px 20px rgba(0,0,0,0.2)',
+                border: rarityStyles.border,
+                boxShadow: rarityStyles.boxShadow,
                 padding: '16px 20px',
                 display: 'flex',
                 flexDirection: 'column',
@@ -253,12 +325,12 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-                {isShiny && <span style={{ fontSize: '24px' }}>⭐</span>}
+                {isShiny && <span style={{ fontSize: '24px' }}>{rarityStyles.icon}</span>}
                 <div
                   style={{
                     fontSize: '28px',
                     fontWeight: 'bold',
-                    color: '#4356c9',
+                    color: isInvert ? '#ffffff' : '#4356c9',
                     wordBreak: 'break-word',
                     lineHeight: 1.2,
                   }}
@@ -269,7 +341,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
               <div
                 style={{
                   fontSize: '16px',
-                  color: '#000000',
+                  color: isInvert ? '#ffffff' : '#000000',
                   lineHeight: 1.4,
                   overflow: 'hidden',
                   display: '-webkit-box',
@@ -284,7 +356,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
                 <div
                   style={{
                     fontSize: '14px',
-                    color: '#555555',
+                    color: isInvert ? '#cccccc' : '#555555',
                     fontStyle: 'italic',
                     marginTop: '8px',
                     overflow: 'hidden',
@@ -300,7 +372,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
             </div>
           </div>
 
-          {/* Кнопки: перегенерация слева, копирование справа */}
+          {/* Кнопки */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', alignItems: 'center' }}>
             <button
               onClick={regenerateCard}
