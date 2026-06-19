@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image';
 
 interface CopyLinkModalProps {
   onClose: () => void;
@@ -42,24 +42,16 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
   const handleCopyImage = async () => {
     if (!cardRef.current) return;
     try {
-      // Небольшая задержка для завершения рендеринга
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: null,
-        allowTaint: true,
-        logging: false, // можно включить для отладки
-        // width: 500,
-        // height: 500,
-        // onclone: (clonedDoc) => {
-        //   // можно модифицировать клонированный DOM, если нужно
-        //   // но для простоты оставляем пустым
-        // },
+      // dom-to-image захватывает элемент с учётом трансформаций
+      const blob = await domtoimage.toBlob(cardRef.current, {
+        width: 500,
+        height: 500,
+        style: {
+          transform: 'scale(1)',
+        },
       });
-      const imageDataUrl = canvas.toDataURL('image/png');
-      const blob = await fetch(imageDataUrl).then((res) => res.blob());
+      if (!blob) throw new Error('Failed to generate image');
+
       await navigator.clipboard.write([
         new ClipboardItem({
           [blob.type]: blob,
@@ -70,13 +62,20 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
     } catch (err) {
       console.error(err);
       // fallback — скачивание
-      const canvas = await html2canvas(cardRef.current, { scale: 2, useCORS: true });
-      const link = document.createElement('a');
-      link.download = `definition-${word}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-      setImageCopied(true);
-      setTimeout(() => setImageCopied(false), 2000);
+      try {
+        const blob = await domtoimage.toBlob(cardRef.current, { width: 500, height: 500 });
+        if (blob) {
+          const link = document.createElement('a');
+          link.download = `definition-${word}.png`;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          setImageCopied(true);
+          setTimeout(() => setImageCopied(false), 2000);
+        }
+      } catch (e) {
+        console.error(e);
+        alert('Не удалось скопировать изображение');
+      }
     }
   };
 
