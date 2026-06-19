@@ -30,7 +30,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
   const [bgColors] = useState(() => [getRandomColor(), getRandomColor()]);
 
   // Шайни-версия — 1% шанс
-  const [isShiny] = useState(() => Math.random() < 0.1);
+  const [isShiny] = useState(() => Math.random() < 0.9);
 
   const handleCopyLink = async () => {
     try {
