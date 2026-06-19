@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
+// @ts-expect-error - нет типов для color4bg
 import { AestheticFluidBg } from 'color4bg';
 
 interface CopyLinkModalProps {
@@ -74,7 +75,6 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
       setTimeout(() => setImageCopied(false), 2000);
     } catch (err) {
       console.error(err);
-      // fallback — скачивание
       const canvas = await html2canvas(cardRef.current, { scale: 2, useCORS: true });
       const link = document.createElement('a');
       link.download = `definition-${word}.png`;
