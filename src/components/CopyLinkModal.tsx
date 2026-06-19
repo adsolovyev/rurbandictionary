@@ -68,7 +68,8 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
     }
   };
 
-  const shareText = `*${word}*\n${definition}${example ? `\n_Пример: ${example}_` : ''}\n\nПодробнее: ${url}`;
+  // Чистый текст без форматирования и без дублирования ссылки
+  const shareText = `${word}\n${definition}${example ? `\nПример: ${example}` : ''}`;
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
 
   return (
@@ -103,7 +104,6 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
       >
         <h3 style={{ color: 'var(--text-color)', marginBottom: '16px' }}>Поделиться</h3>
 
-        {/* Строка ссылки */}
         <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center' }}>
           <input
             type="text"
@@ -144,7 +144,6 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
           </button>
         </div>
 
-        {/* Telegram — ссылка с hover-эффектом */}
         <div style={{ marginBottom: '20px' }}>
           <a
             href={telegramUrl}
@@ -177,7 +176,6 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
 
         <hr style={{ borderColor: 'var(--border-color)', margin: '0 0 20px 0' }} />
 
-        {/* Блок с картинкой */}
         <div style={{ marginBottom: '16px' }}>
           <div
             ref={cardRef}
