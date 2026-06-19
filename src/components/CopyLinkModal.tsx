@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
+import { AestheticFluidBg } from 'color4bg';
 
 interface CopyLinkModalProps {
   onClose: () => void;
@@ -13,7 +14,9 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
   const [linkCopied, setLinkCopied] = useState(false);
   const [imageCopied, setImageCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const bgContainerRef = useRef<HTMLDivElement>(null);
 
+  // Закрытие по Esc
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -22,16 +25,25 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
     return () => document.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
-  const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
+  // Генерация фона через Color4Bg
+  useEffect(() => {
+    if (!bgContainerRef.current) return;
 
-  const [bgColors] = useState(() => [getRandomColor(), getRandomColor()]);
+    const randomColor = () =>
+      `#${Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, '0')}`;
+
+    const bg = new AestheticFluidBg({
+      dom: bgContainerRef.current,
+      colors: [randomColor(), randomColor(), randomColor()],
+      speed: 0.5,
+      blur: 0.3,
+    });
+    bg.start();
+
+    return () => bg.destroy();
+  }, []);
 
   const handleCopyLink = async () => {
     try {
@@ -52,7 +64,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
         backgroundColor: null,
       });
       const imageDataUrl = canvas.toDataURL('image/png');
-      const blob = await fetch(imageDataUrl).then(res => res.blob());
+      const blob = await fetch(imageDataUrl).then((res) => res.blob());
       await navigator.clipboard.write([
         new ClipboardItem({
           [blob.type]: blob,
@@ -62,6 +74,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
       setTimeout(() => setImageCopied(false), 2000);
     } catch (err) {
       console.error(err);
+      // fallback — скачивание
       const canvas = await html2canvas(cardRef.current, { scale: 2, useCORS: true });
       const link = document.createElement('a');
       link.download = `definition-${word}.png`;
@@ -72,8 +85,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
     }
   };
 
-  // Формируем ссылку для Telegram
-  const shareText = `${word}\n${definition}${example ? `\n\nПример: ${example}` : ''}`;
+  const shareText = `*${word}*\n${definition}${example ? `\n_Пример: ${example}_` : ''}\n\nПодробнее: ${url}`;
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
 
   return (
@@ -108,7 +120,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
       >
         <h3 style={{ color: 'var(--text-color)', marginBottom: '16px' }}>Поделиться</h3>
 
-        {/* Блок ссылки */}
+        {/* Строка ссылки */}
         <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', alignItems: 'center' }}>
           <input
             type="text"
@@ -170,7 +182,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
 
         <hr style={{ borderColor: 'var(--border-color)', margin: '0 0 20px 0' }} />
 
-        {/* Блок картинки */}
+        {/* Блок с картинкой */}
         <div style={{ marginBottom: '16px' }}>
           <div
             ref={cardRef}
@@ -179,18 +191,31 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
               height: '500px',
               maxWidth: '100%',
               aspectRatio: '1 / 1',
-              background: `linear-gradient(135deg, ${bgColors[0]}, ${bgColors[1]})`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               borderRadius: '16px',
               margin: '0 auto 12px',
               position: 'relative',
               overflow: 'hidden',
             }}
           >
+            {/* Контейнер для фона Color4Bg */}
+            <div
+              ref={bgContainerRef}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 0,
+              }}
+            />
+            {/* Белая карточка поверх фона */}
             <div
               style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%) rotate(-2deg)',
                 width: '300px',
                 maxHeight: '300px',
                 minHeight: '120px',
@@ -198,13 +223,13 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
                 backgroundColor: '#ffffff',
                 borderRadius: '12px',
                 boxShadow: '8px 8px 20px rgba(0,0,0,0.2)',
-                transform: 'rotate(-2deg)',
                 padding: '16px 20px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 overflow: 'hidden',
                 textAlign: 'left',
+                zIndex: 1,
               }}
             >
               <div
