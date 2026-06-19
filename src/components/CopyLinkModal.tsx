@@ -42,10 +42,21 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
   const handleCopyImage = async () => {
     if (!cardRef.current) return;
     try {
+      // Небольшая задержка для завершения рендеринга
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       const canvas = await html2canvas(cardRef.current, {
         scale: 2,
         useCORS: true,
         backgroundColor: null,
+        allowTaint: true,
+        logging: false, // можно включить для отладки
+        // width: 500,
+        // height: 500,
+        // onclone: (clonedDoc) => {
+        //   // можно модифицировать клонированный DOM, если нужно
+        //   // но для простоты оставляем пустым
+        // },
       });
       const imageDataUrl = canvas.toDataURL('image/png');
       const blob = await fetch(imageDataUrl).then((res) => res.blob());
@@ -58,6 +69,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
       setTimeout(() => setImageCopied(false), 2000);
     } catch (err) {
       console.error(err);
+      // fallback — скачивание
       const canvas = await html2canvas(cardRef.current, { scale: 2, useCORS: true });
       const link = document.createElement('a');
       link.download = `definition-${word}.png`;
@@ -68,7 +80,6 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
     }
   };
 
-  // Чистый текст без форматирования и без дублирования ссылки
   const shareText = `${word}\n${definition}${example ? `\nПример: ${example}` : ''}`;
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
 
