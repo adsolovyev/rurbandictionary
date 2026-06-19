@@ -56,34 +56,40 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
     }
   };
 
-  const handleCopyImage = async () => {
-    if (!cardRef.current) return;
-    try {
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: null,
-      });
-      const imageDataUrl = canvas.toDataURL('image/png');
-      const blob = await fetch(imageDataUrl).then((res) => res.blob());
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          [blob.type]: blob,
-        }),
-      ]);
-      setImageCopied(true);
-      setTimeout(() => setImageCopied(false), 2000);
-    } catch (err) {
-      console.error(err);
-      const canvas = await html2canvas(cardRef.current, { scale: 2, useCORS: true });
-      const link = document.createElement('a');
-      link.download = `definition-${word}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-      setImageCopied(true);
-      setTimeout(() => setImageCopied(false), 2000);
-    }
-  };
+ const handleCopyImage = async () => {
+  if (!cardRef.current) return;
+  try {
+    // Небольшая задержка
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const canvas = await html2canvas(cardRef.current, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+      ignoreElements: (el) => el === bgContainerRef.current,
+      logging: false, // может помочь
+    });
+    const imageDataUrl = canvas.toDataURL('image/png');
+    const blob = await fetch(imageDataUrl).then((res) => res.blob());
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        [blob.type]: blob,
+      }),
+    ]);
+    setImageCopied(true);
+    setTimeout(() => setImageCopied(false), 2000);
+  } catch (err) {
+    console.error(err);
+    // fallback
+    const canvas = await html2canvas(cardRef.current, { scale: 2, useCORS: true });
+    const link = document.createElement('a');
+    link.download = `definition-${word}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    setImageCopied(true);
+    setTimeout(() => setImageCopied(false), 2000);
+  }
+};
 
   const shareText = `*${word}*\n${definition}${example ? `\n_Пример: ${example}_` : ''}\n\nПодробнее: ${url}`;
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
