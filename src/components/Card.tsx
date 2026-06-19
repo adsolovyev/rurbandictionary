@@ -93,6 +93,9 @@ export default function Card({
       })
     : '';
 
+  // Ссылка на определение — используем слово, чтобы открыть поиск
+  const definitionUrl = `${window.location.origin}/search?word=${encodeURIComponent(word)}`;
+
   return (
     <>
       <div className="card" style={{
@@ -205,21 +208,23 @@ export default function Card({
           <LinkedText text={definition} words={words} excludeWord={word} />
         </p>
 
-        <blockquote
-          style={{
-            borderLeft: '4px solid var(--link-color)',
-            paddingLeft: '12px',
-            margin: '12px 0',
-            fontStyle: 'italic',
-            color: 'var(--blockquote-color)',
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
-            maxWidth: '100%',
-            overflow: 'hidden',
-          }}
-        >
-          <LinkedText text={example} words={words} excludeWord={word} />
-        </blockquote>
+        {example && (
+          <blockquote
+            style={{
+              borderLeft: '4px solid var(--link-color)',
+              paddingLeft: '12px',
+              margin: '12px 0',
+              fontStyle: 'italic',
+              color: 'var(--blockquote-color)',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              maxWidth: '100%',
+              overflow: 'hidden',
+            }}
+          >
+            <LinkedText text={example} words={words} excludeWord={word} />
+          </blockquote>
+        )}
 
         <div className="card-footer" style={{
           display: 'flex',
@@ -299,15 +304,16 @@ export default function Card({
           </div>
         </div>
       </div>
+
       {showModal && (
-  <CopyLinkModal
-    onClose={() => setShowModal(false)}
-    url={window.location.href}
-    word={word}
-    definition={definition}
-    example={example}  // добавили
-  />
-)}
+        <CopyLinkModal
+          onClose={() => setShowModal(false)}
+          url={definitionUrl}
+          word={word}
+          definition={definition}
+          example={example}
+        />
+      )}
     </>
   );
 }
