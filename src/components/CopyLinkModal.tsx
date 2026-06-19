@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 
 interface CopyLinkModalProps {
@@ -6,13 +6,21 @@ interface CopyLinkModalProps {
   url: string;
   word: string;
   definition: string;
-  example?: string; // добавили
+  example?: string;
 }
 
 export default function CopyLinkModal({ onClose, url, word, definition, example }: CopyLinkModalProps) {
   const [linkCopied, setLinkCopied] = useState(false);
   const [imageCopied, setImageCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
 
   const getRandomColor = () => {
     const letters = '0123456789ABCDEF';
@@ -54,7 +62,6 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
       setTimeout(() => setImageCopied(false), 2000);
     } catch (err) {
       console.error(err);
-      // fallback: скачать
       const canvas = await html2canvas(cardRef.current, { scale: 2, useCORS: true });
       const link = document.createElement('a');
       link.download = `definition-${word}.png`;
@@ -64,6 +71,10 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
       setTimeout(() => setImageCopied(false), 2000);
     }
   };
+
+  // Формируем ссылку для Telegram
+  const shareText = `${word}\n${definition}${example ? `\n\nПример: ${example}` : ''}`;
+  const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
 
   return (
     <div
@@ -97,20 +108,24 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
       >
         <h3 style={{ color: 'var(--text-color)', marginBottom: '16px' }}>Поделиться</h3>
 
-        <div style={{ marginBottom: '16px' }}>
+        {/* Блок ссылки */}
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', alignItems: 'center' }}>
           <input
             type="text"
             value={url}
             readOnly
             style={{
-              width: '100%',
-              padding: '10px',
+              flex: 1,
+              padding: '8px 12px',
               backgroundColor: 'var(--vote-bg)',
               border: '1px solid var(--border-color)',
               borderRadius: '8px',
               color: 'var(--text-color)',
-              marginBottom: '8px',
-              fontSize: '14px',
+              fontSize: '13px',
+              minWidth: 0,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
             }}
           />
           <button
@@ -118,19 +133,44 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
             style={{
               backgroundColor: '#4dafff',
               border: 'none',
-              padding: '8px 20px',
+              padding: '8px 16px',
               borderRadius: '40px',
               color: '#fff',
               cursor: 'pointer',
-              fontSize: '14px',
+              fontSize: '13px',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
             }}
           >
-            {linkCopied ? 'Ссылка скопирована!' : 'Копировать ссылку'}
+            {linkCopied ? 'Скопировано!' : 'Копировать'}
           </button>
         </div>
 
-        <hr style={{ borderColor: 'var(--border-color)', margin: '20px 0' }} />
+        {/* Telegram */}
+        <div style={{ marginBottom: '20px' }}>
+          <a
+            href={telegramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: 'var(--link-color)',
+              fontSize: '14px',
+              textDecoration: 'none',
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M228.88,26.19a9,9,0,0,0-9.16-1.57L17.06,103.93a14.22,14.22,0,0,0,2.43,27.21L72,141.45V200a15.92,15.92,0,0,0,10,14.83,15.91,15.91,0,0,0,17.51-3.73l25.32-26.26L165,220a15.88,15.88,0,0,0,10.51,4,16.3,16.3,0,0,0,5-.79,15.85,15.85,0,0,0,10.67-11.63L231.77,35A9,9,0,0,0,228.88,26.19Zm-61.14,36L78.15,126.35l-49.6-9.73ZM88,200V152.52l24.79,21.74Zm87.53,8L92.85,135.5l119-85.29Z" />
+            </svg>
+            Поделиться в Telegram
+          </a>
+        </div>
 
+        <hr style={{ borderColor: 'var(--border-color)', margin: '0 0 20px 0' }} />
+
+        {/* Блок картинки */}
         <div style={{ marginBottom: '16px' }}>
           <div
             ref={cardRef}
@@ -149,12 +189,11 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
               overflow: 'hidden',
             }}
           >
-            {/* Белая карточка — адаптивная высота, центрирование */}
             <div
               style={{
                 width: '300px',
                 maxHeight: '300px',
-                minHeight: '120px', // чтобы не слишком мелко
+                minHeight: '120px',
                 maxWidth: '85%',
                 backgroundColor: '#ffffff',
                 borderRadius: '12px',
@@ -165,7 +204,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
                 flexDirection: 'column',
                 justifyContent: 'center',
                 overflow: 'hidden',
-                textAlign: 'left', // выравнивание по левому краю
+                textAlign: 'left',
               }}
             >
               <div
@@ -231,21 +270,6 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
             {imageCopied ? 'Изображение скопировано!' : 'Поделиться изображением'}
           </button>
         </div>
-
-        <button
-          onClick={onClose}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--text-color)',
-            display: 'block',
-            margin: '12px auto 0',
-            fontSize: '14px',
-          }}
-        >
-          Закрыть
-        </button>
       </div>
     </div>
   );
