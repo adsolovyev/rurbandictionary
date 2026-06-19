@@ -14,6 +14,28 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
   const [imageCopied, setImageCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Генерация случайных цветов
+  const getRandomColor = () =>
+    `#${Math.floor(Math.random() * 16777215)
+      .toString(16)
+      .padStart(6, '0')}`;
+
+  // Генерация фона (2 цвета)
+  const generateBgColors = () => [getRandomColor(), getRandomColor()];
+
+  // Шайни-статус (10%)
+  const generateShiny = () => Math.random() < 0.5;
+
+  // Состояния для фона и шайни
+  const [bgColors, setBgColors] = useState(() => generateBgColors());
+  const [isShiny, setIsShiny] = useState(() => generateShiny());
+
+  // Перегенерация (фон + шайни)
+  const regenerateCard = () => {
+    setBgColors(generateBgColors());
+    setIsShiny(generateShiny());
+  };
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -21,16 +43,6 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
     document.addEventListener('keydown', handleEsc);
     return () => document.removeEventListener('keydown', handleEsc);
   }, [onClose]);
-
-  const getRandomColor = () =>
-    `#${Math.floor(Math.random() * 16777215)
-      .toString(16)
-      .padStart(6, '0')}`;
-
-  const [bgColors] = useState(() => [getRandomColor(), getRandomColor()]);
-
-  // Шайни-версия — 1% шанс
-  const [isShiny] = useState(() => Math.random() < 0.9);
 
   const handleCopyLink = async () => {
     try {
@@ -93,16 +105,6 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
   const shareText = `${word}\n${definition}${example ? `\nПример: ${example}` : ''}`;
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
 
-  // Шайни-стили
-  const backgroundStyle = isShiny
-    ? 'linear-gradient(135deg, #FFD700, #FFA500, #FF8C00, #FFD700)'
-    : `linear-gradient(135deg, ${bgColors[0]}, ${bgColors[1]})`;
-
-  const cardBorder = isShiny ? '3px solid #FFD700' : 'none';
-  const cardBoxShadow = isShiny
-    ? '0 0 30px rgba(255,215,0,0.6), 8px 8px 20px rgba(0,0,0,0.2)'
-    : '8px 8px 20px rgba(0,0,0,0.2)';
-
   return (
     <div
       style={{
@@ -133,9 +135,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 style={{ color: 'var(--text-color)', marginBottom: '16px' }}>
-          Поделиться {isShiny && <span style={{ marginLeft: '8px' }}>✨</span>}
-        </h3>
+        <h3 style={{ color: 'var(--text-color)', marginBottom: '16px' }}>Поделиться</h3>
 
         <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center' }}>
           <input
@@ -210,6 +210,7 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
         <hr style={{ borderColor: 'var(--border-color)', margin: '0 0 20px 0' }} />
 
         <div style={{ marginBottom: '16px' }}>
+          {/* Карточка */}
           <div
             ref={cardRef}
             style={{
@@ -221,7 +222,9 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
               margin: '0 auto 12px',
               position: 'relative',
               overflow: 'hidden',
-              background: backgroundStyle,
+              background: isShiny
+                ? 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700, #FF8C00)'
+                : `linear-gradient(135deg, ${bgColors[0]}, ${bgColors[1]})`,
             }}
           >
             <div
@@ -236,8 +239,10 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
                 maxWidth: '85%',
                 backgroundColor: '#ffffff',
                 borderRadius: '12px',
-                border: cardBorder,
-                boxShadow: cardBoxShadow,
+                border: isShiny ? '3px solid #FFD700' : 'none',
+                boxShadow: isShiny
+                  ? '0 0 30px rgba(255,215,0,0.6), 8px 8px 20px rgba(0,0,0,0.2)'
+                  : '8px 8px 20px rgba(0,0,0,0.2)',
                 padding: '16px 20px',
                 display: 'flex',
                 flexDirection: 'column',
@@ -247,21 +252,19 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
                 zIndex: 1,
               }}
             >
-              <div
-                style={{
-                  fontSize: '28px',
-                  fontWeight: 'bold',
-                  color: '#4356c9',
-                  marginBottom: '6px',
-                  wordBreak: 'break-word',
-                  lineHeight: 1.2,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
-              >
-                {word}
-                {isShiny && <span style={{ fontSize: '24px' }}>✨</span>}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                {isShiny && <span style={{ fontSize: '24px' }}>⭐</span>}
+                <div
+                  style={{
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    color: '#4356c9',
+                    wordBreak: 'break-word',
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {word}
+                </div>
               </div>
               <div
                 style={{
@@ -297,25 +300,55 @@ export default function CopyLinkModal({ onClose, url, word, definition, example 
             </div>
           </div>
 
-          <button
-            onClick={handleCopyImage}
-            style={{
-              backgroundColor: '#4dafff',
-              border: 'none',
-              padding: '8px 20px',
-              borderRadius: '40px',
-              color: '#fff',
-              cursor: 'pointer',
-              fontSize: '14px',
-              display: 'block',
-              margin: '0 auto',
-              transition: 'background-color 0.2s',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3a8fcc')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#4dafff')}
-          >
-            {imageCopied ? 'Изображение скопировано!' : 'Скопировать изображение'}
-          </button>
+          {/* Кнопки: перегенерация слева, копирование справа */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', alignItems: 'center' }}>
+            <button
+              onClick={regenerateCard}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '8px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '50%',
+                transition: 'background-color 0.2s, color 0.2s',
+                color: 'var(--text-color)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--vote-bg)';
+                e.currentTarget.style.color = '#ffffff';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = 'var(--text-color)';
+              }}
+              title="Перегенерировать карточку"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256">
+                <path d="M192,32H64A32,32,0,0,0,32,64V192a32,32,0,0,0,32,32H192a32,32,0,0,0,32-32V64A32,32,0,0,0,192,32Zm16,160a16,16,0,0,1-16,16H64a16,16,0,0,1-16-16V64A16,16,0,0,1,64,48H192a16,16,0,0,1,16,16ZM104,84A12,12,0,1,1,92,72,12,12,0,0,1,104,84Zm72,0a12,12,0,1,1-12-12A12,12,0,0,1,176,84Zm-72,44a12,12,0,1,1-12-12A12,12,0,0,1,104,128Zm72,0a12,12,0,1,1-12-12A12,12,0,0,1,176,128Zm-72,44a12,12,0,1,1-12-12A12,12,0,0,1,104,172Zm72,0a12,12,0,1,1-12-12A12,12,0,0,1,176,172Z" />
+              </svg>
+            </button>
+
+            <button
+              onClick={handleCopyImage}
+              style={{
+                backgroundColor: '#4dafff',
+                border: 'none',
+                padding: '8px 20px',
+                borderRadius: '40px',
+                color: '#fff',
+                cursor: 'pointer',
+                fontSize: '14px',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3a8fcc')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#4dafff')}
+            >
+              {imageCopied ? 'Изображение скопировано!' : 'Скопировать изображение'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
