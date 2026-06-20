@@ -1,49 +1,77 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { useThemeStore } from '../stores/themeStore';
-import { reportDefinition } from '../services/api';
+import { reportDefinition, API_BASE } from '../services/api';
+import CardSimple from '../components/CardSimple';
+import type { Definition } from '../services/api';
 
 export default function ReportForm() {
-  const navigate = useNavigate();
   const { definitionId } = useParams<{ definitionId: string }>();
+  const navigate = useNavigate();
   const { user } = useAuthStore();
   const { theme } = useThemeStore();
   const [reason, setReason] = useState('');
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [definition, setDefinition] = useState<Definition | null>(null);
+  const [fetchError, setFetchError] = useState('');
 
   useEffect(() => {
     if (!user) {
-      navigate(`/login?redirect=/report/${definitionId}`);
+      navigate('/login?redirect=' + encodeURIComponent(`/report/${definitionId}`));
+      return;
     }
-  }, [user, navigate, definitionId]);
+    if (!definitionId) return;
+    fetch(`${API_BASE}/definitions/${definitionId}`, { credentials: 'include' })
+      .then(res => {
+        if (!res.ok) throw new Error('Definition not found');
+        return res.json();
+      })
+      .then(data => setDefinition(data))
+      .catch(err => setFetchError(err.message));
+  }, [definitionId, user, navigate]);
+
+  const reasons = [
+    'Спам или реклама',
+    'Оскорбительное содержание',
+    'Неверное определение',
+    'Другое',
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      navigate(`/login?redirect=/report/${definitionId}`);
+      navigate('/login');
       return;
     }
-    if (!reason.trim()) {
-      setError('Укажите причину жалобы');
+    if (!reason) {
+      setError('Выберите причину жалобы');
       return;
     }
     setLoading(true);
     setError('');
     try {
-      await reportDefinition(Number(definitionId), reason.trim(), comment.trim());
-      navigate(`/`);
-    } catch (err) {
-      setError('Ошибка при отправке жалобы. Попробуйте позже.');
-      console.error(err);
+      await reportDefinition(Number(definitionId), reason, comment);
+      alert('Жалоба отправлена. Спасибо.');
+      navigate('/');
+    } catch {
+      setError('Ошибка при отправке. Попробуйте позже.');
     } finally {
       setLoading(false);
     }
   };
 
   if (!user) return null;
+
+  if (fetchError) {
+    return <div style={{ color: 'var(--text-color)' }}>Ошибка загрузки определения: {fetchError}</div>;
+  }
+
+  if (!definition) {
+    return <div style={{ color: 'var(--text-color)' }}>Загрузка определения...</div>;
+  }
 
   const closeButtonColor = theme === 'light' ? '#6B7280' : 'var(--text-color)';
 
@@ -57,56 +85,63 @@ export default function ReportForm() {
           border: '1px solid var(--border-color)',
         }}
       >
-        <h1 style={{ color: 'var(--text-color)', marginBottom: '16px', textAlign: 'center', fontSize: '1.8rem' }}>
+        <h2 style={{ color: 'var(--text-color)', textAlign: 'center', marginTop: '24px', marginBottom: '32px' }}>
           Пожаловаться на определение
-        </h1>
+        </h2>
+
+        <CardSimple
+          definition={definition}
+          showDateAndAuthor={true}
+          showVotes={true}
+          style={{
+            border: '2px solid #e0e0e0', 
+            marginBottom: '24px',
+          }}
+        />
+
+        <p style={{ color: 'var(--blockquote-color)', marginBottom: '24px', textAlign: 'center' }}>
+          Пожалуйста, выберите причину жалобы. Мы рассмотрим её когда-нибудь.
+        </p>
 
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ color: 'var(--text-color)', display: 'block', marginBottom: '8px' }}>
-              Причина жалобы
-            </label>
-            <input
-              type="text"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="Например: оскорбление, спам, не по теме"
-              style={{
-                width: '100%',
-                padding: '10px',
-                backgroundColor: 'var(--vote-bg)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '8px',
-                color: 'var(--text-color)',
-                fontSize: '1rem',
-              }}
-              required
-            />
+          <div style={{ marginBottom: '24px' }}>
+            <label style={{ color: 'var(--text-color)', display: 'block', marginBottom: '12px' }}>Причина жалобы *</label>
+            {reasons.map(r => (
+              <div key={r} style={{ marginBottom: '8px' }}>
+                <label style={{ color: 'var(--text-color)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <input
+                    type="radio"
+                    value={r}
+                    checked={reason === r}
+                    onChange={(e) => setReason(e.target.value)}
+                  />
+                  {r}
+                </label>
+              </div>
+            ))}
           </div>
 
           <div style={{ marginBottom: '24px' }}>
-            <label style={{ color: 'var(--text-color)', display: 'block', marginBottom: '8px' }}>
-              Комментарий (опционально)
-            </label>
+            <label style={{ color: 'var(--text-color)', display: 'block', marginBottom: '8px' }}>Комментарий (необязательно)</label>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              rows={4}
-              placeholder="Дополнительная информация..."
+              rows={3}
               style={{
                 width: '100%',
                 padding: '10px',
                 backgroundColor: 'var(--vote-bg)',
                 border: '1px solid var(--border-color)',
-                borderRadius: '8px',
                 color: 'var(--text-color)',
+                borderRadius: '8px',
                 fontSize: '1rem',
                 resize: 'vertical',
               }}
+              placeholder="Дополнительные детали..."
             />
           </div>
 
-          {error && <div style={{ color: '#f44336', marginBottom: '16px', fontSize: '0.9rem' }}>{error}</div>}
+          {error && <div style={{ color: '#f44336', marginBottom: '20px', fontSize: '0.9rem' }}>{error}</div>}
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
             <button
@@ -125,7 +160,7 @@ export default function ReportForm() {
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3a8fcc')}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#4dafff')}
             >
-              {loading ? 'Отправка...' : 'Отправить жалобу'}
+              {loading ? 'Отправка...' : 'Пожаловаться'}
             </button>
 
             <button
