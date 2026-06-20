@@ -129,9 +129,10 @@ export default function Card({
     cursor: 'pointer',
     padding: 0,
     marginLeft: '8px',
-    display: 'inline-block', // вместо inline-flex
-    verticalAlign: 'baseline', // baseline — по умолчанию
-    // убираем transform
+    display: 'inline-flex',
+    alignItems: 'center', 
+    verticalAlign: 'middle', 
+    height: '1.2em',  
   }}
   title="Произнести слово"
 >
@@ -142,8 +143,7 @@ export default function Card({
     fill="var(--text-color)"
     viewBox="0 0 256 256"
     style={{
-      display: 'block', // чтобы не было лишних отступов
-      width: '1.2em',   // размер относительно шрифта
+      width: '1.2em',
       height: '1.2em',
     }}
   >
