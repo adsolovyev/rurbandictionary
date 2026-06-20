@@ -121,25 +121,35 @@ export default function Card({
                 {word}
               </h2>
               <button
-                onClick={() => speakWord(word)}
-                className="speak-button"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  marginLeft: '8px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  verticalAlign: 'middle',
-                  transform: 'translateY(-4px)',
-                }}
-                title="Произнести слово"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--text-color)" viewBox="0 0 256 256">
-                  <path d="M155.51,24.81a8,8,0,0,0-8.42.88L77.25,80H32A16,16,0,0,0,16,96v64a16,16,0,0,0,16,16H77.25l69.84,54.31A8,8,0,0,0,160,224V32A8,8,0,0,0,155.51,24.81ZM32,96H72v64H32ZM144,207.64,88,164.09V91.91l56-43.55Zm54-106.08a40,40,0,0,1,0,52.88,8,8,0,0,1-12-10.58,24,24,0,0,0,0-31.72,8,8,0,0,1,12-10.58ZM248,128a79.9,79.9,0,0,1-20.37,53.34,8,8,0,0,1-11.92-10.67,64,64,0,0,0,0-85.33,8,8,0,1,1,11.92-10.67A79.83,79.83,0,0,1,248,128Z" />
-                </svg>
-              </button>
+  onClick={() => speakWord(word)}
+  className="speak-button"
+  style={{
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 0,
+    marginLeft: '8px',
+    display: 'inline-block', // вместо inline-flex
+    verticalAlign: 'baseline', // baseline — по умолчанию
+    // убираем transform
+  }}
+  title="Произнести слово"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="var(--text-color)"
+    viewBox="0 0 256 256"
+    style={{
+      display: 'block', // чтобы не было лишних отступов
+      width: '1.2em',   // размер относительно шрифта
+      height: '1.2em',
+    }}
+  >
+    <path d="..." />
+  </svg>
+</button>
             </div>
             <div className="action-buttons" style={{ display: 'flex', gap: '8px', flexShrink: 0, marginLeft: '12px' }}>
               <button
