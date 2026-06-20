@@ -70,7 +70,11 @@ export default function SearchResults() {
   };
 
   if (!word) return <div style={{ color: 'var(--text-color)' }}>Введите слово для поиска</div>;
-  if (loadingInitial) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
+  if (loadingInitial) return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+      <div className="loader" />
+    </div>
+  );
   if (definitions.length === 0)
     return <div style={{ color: 'var(--text-color)' }}>Определений для "{word}" еще нет, но вы можете это исправить.</div>;
 

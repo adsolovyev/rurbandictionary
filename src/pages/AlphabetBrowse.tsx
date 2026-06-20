@@ -55,7 +55,11 @@ export default function AlphabetBrowse() {
     }
   };
 
-  if (loading) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
+  if (loading) return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+      <div className="loader" />
+    </div>
+  );;
 
   return (
     <div>

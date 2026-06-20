@@ -119,7 +119,11 @@ export default function AdminPending() {
     if (currentIndex < definitions.length - 1) setCurrentIndex(currentIndex + 1);
   };
 
-  if (loading) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
+  if (loading) return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+      <div className="loader" />
+    </div>
+  );
   if (!currentDef && definitions.length === 0) {
     return <div style={{ color: 'var(--text-color)', padding: '20px' }}>Нет определений на модерации.</div>;
   }

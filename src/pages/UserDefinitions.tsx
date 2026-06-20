@@ -65,7 +65,11 @@ export default function UserDefinitions() {
     }
   };
 
-  if (loadingInitial) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
+  if (loadingInitial) return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+      <div className="loader" />
+    </div>
+  );
   if (!definitions.length && !loadingInitial)
     return <div style={{ color: 'var(--text-color)' }}>Пользователь {login} ещё не добавил определений</div>;
 

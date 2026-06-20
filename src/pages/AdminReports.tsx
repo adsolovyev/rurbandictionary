@@ -115,7 +115,11 @@ export default function AdminReports() {
   const contactUserWIP = () => alert('Функция связи с пользователем в разработке');
   const contactAuthorWIP = () => alert('Функция связи с автором в разработке');
 
-  if (loading) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
+  if (loading) return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+      <div className="loader" />
+    </div>
+  );
   if (!currentReport && reports.length === 0) {
     return <div style={{ color: 'var(--text-color)', padding: '20px' }}>Нет неразрешённых жалоб.</div>;
   }

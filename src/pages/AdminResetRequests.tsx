@@ -250,7 +250,11 @@ export default function AdminResetRequests() {
   };
 
   // ---- РЕНДЕРИНГ ----
-  if (loading) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
+  if (loading) return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+      <div className="loader" />
+    </div>
+  );;
   if (!currentRequest && requests.length === 0) {
     return <div style={{ color: 'var(--text-color)', padding: '20px' }}>Нет активных заявок на смену пароля.</div>;
   }

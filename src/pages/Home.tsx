@@ -61,7 +61,11 @@ export default function Home() {
   };
 
   if (loadingInitial) {
-    return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
+    return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+      <div className="loader" />
+    </div>
+  );
   }
 
   if (definitions.length === 0 && !loadingInitial) {

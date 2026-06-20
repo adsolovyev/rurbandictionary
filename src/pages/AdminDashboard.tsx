@@ -54,7 +54,11 @@ export default function AdminDashboard() {
     return <Navigate to="/" replace />;
   }
 
-  if (loading) return <div style={{ color: 'var(--text-color)' }}>Загрузка...</div>;
+  if (loading) return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+      <div className="loader" />
+    </div>
+  );
 
   return (
     <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}>
